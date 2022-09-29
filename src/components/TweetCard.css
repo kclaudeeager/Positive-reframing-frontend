@@ -1,0 +1,19 @@
+
+ion-label {
+        display: flex;
+        flex-direction: column;
+        width: 100% !important;
+        max-widht : 100% !important;
+        margin: 0 !important;
+    }
+ion-card-content img {
+    height: 50vh; 
+    width: 100%;  
+}
+.hashtag{
+    color:dodgerblue;
+}
+
+#rotate_icon{
+    transform: rotate(270deg);
+}
