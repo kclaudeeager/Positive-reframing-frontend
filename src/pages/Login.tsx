@@ -61,7 +61,7 @@ axios(config)
 })
   };
   return (
-    <IonPage>
+    <IonPage >
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -76,8 +76,8 @@ axios(config)
           <IonTitle color='primary'>Login</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen className="ion-padding ion-text-center">
-        <IonGrid>
+      <IonContent fullscreen className="ion-padding ion-text-center ">
+        <IonGrid className='md:w-1/2 mx-auto border-2 md:border-none '>
         <IonRow>
           <IonCol>
             <IonAlert

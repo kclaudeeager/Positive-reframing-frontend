@@ -111,9 +111,9 @@ const addChanges=()=>{
           <IonTitle color='primary'>Home</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        <IonButton onClick={Tweet}>Click to add a tweet</IonButton>
-      <TweetCard tweetList={tweetList} setTweetList={setTweetList} addChanges={addChanges}/>
+      <IonContent fullscreen  className=' relative'>
+        <IonButton onClick={Tweet} className=" sticky top-0 z-10">Click to add a tweet</IonButton>
+        <TweetCard tweetList={tweetList} setTweetList={setTweetList} addChanges={addChanges}/>
       </IonContent>
     </IonPage>
   );

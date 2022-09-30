@@ -1,4 +1,4 @@
-import { IonRow, IonCol, IonButton, IonIcon, IonCard, IonItem, IonLabel, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonAvatar, IonText, IonList } from '@ionic/react';
+import { IonRow, IonCol, IonButton, IonIcon, IonCard, IonItem, IonLabel, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonAvatar, IonText, IonList, IonGrid } from '@ionic/react';
 import React, { useState } from 'react';
 
 import './TweetCard.css';
@@ -43,18 +43,17 @@ const TweetCard: React.FC<{
 })
     }
     return (
-        <>
-             <IonList>
+     
+    <div className=' grid grid-cols-1 md:grid-cols-3 '>
         {props.tweetList.map((item:any)=>{
-            return <IonItem key={`${item.id}`}><TweetItem tweet={item} onCalculate={function (): void {
+            return <IonRow  key={`${item.id}`} className="mx-auto"><TweetItem tweet={item} onCalculate={function (): void {
                 throw new Error('Function not implemented.');
             } } onReset={function (): void {
                 throw new Error('Function not implemented.');
-            } } changeTweet={changeTweet}/></IonItem>
+            } } changeTweet={changeTweet}/></IonRow>
         })}
-    </IonList>
+    </ div>
             
-        </>
 
 
     );

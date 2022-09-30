@@ -33,7 +33,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
       return hashtags.map((hashtag:string)=> {return <IonText key={`${hashtag}`}>{"#"+hashtag+" "}</IonText>});
    }
   const returnImages=(images:Array<{src:string,caption:string,name:string}>)=>{
-      return images.map((image:{src:string,caption:string,name:string})=>{return(<img key={`${image.name}`} src={`${image.src}`} alt=""/>)})
+      return images.map((image:{src:string,caption:string,name:string})=>{return(<img  key={`${image.name}`} src={`${image.src}`} alt="img" className=' w-full'/>)})
   }
 
       const assignReaction = () => {
@@ -47,6 +47,8 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
       }
 
     return(
+        <>
+
         <IonCard>   
         <IonItem>
             <IonAvatar className='ion-margin-end'>
@@ -57,7 +59,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
             </IonLabel>
         </IonItem>
           
-        <IonCardContent >
+        <IonCardContent>
             <p>{props.tweet.message} <span className='hashtag'>{hashtagCreator(props.tweet.hashtags)}</span></p>
           <> {returnImages(props.tweet.images)}</>
         </IonCardContent>
@@ -70,6 +72,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
             {props.tweet.displayReplies && <RepliesCard />}
         </IonRow>
         </IonCard>
+        </>
     );
 
 }
