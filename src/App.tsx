@@ -33,6 +33,8 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import NewPost from './components/NewTweet';
+
 
 setupIonicReact();
 
@@ -53,6 +55,10 @@ const App: React.FC = () => (
           <Route exact path="/">
             <Redirect to="/login" />
           </Route>
+          <Route exact path="/newpost">
+           <NewPost />
+          </Route>
+        
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="Login" href="/login">
@@ -66,6 +72,10 @@ const App: React.FC = () => (
           <IonTabButton tab="tab3" href="/tab3">
             <IonIcon icon={square} />
             <IonLabel>Tab 3</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="Newpost" href="/newpost">
+            <IonIcon icon={triangle} />
+            <IonLabel>New post</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>

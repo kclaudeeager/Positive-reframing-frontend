@@ -24,7 +24,6 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     }
     changeTweet:(id:string,action:string)=>void
 }> = props => {
-     
 
    const mentionsCreator=(mentions:Array<string>)=>{
     return mentions.map((mention:string)=> {return <IonText key={`${mention}`}>{"@"+mention+" "}</IonText>});
