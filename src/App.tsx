@@ -10,7 +10,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle } from 'ionicons/icons';
+import { add, addCircle, ellipse, home, homeSharp, square, triangle } from 'ionicons/icons';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Tab3 from './pages/Tab3';
@@ -30,17 +30,14 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
-
 /* Theme variables */
 import './theme/variables.css';
 import NewPost from './components/NewTweet';
 
-
 setupIonicReact();
-
 const App: React.FC = () => (
   <IonApp>
-    <IonReactRouter>
+      <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/login">
@@ -49,16 +46,14 @@ const App: React.FC = () => (
           <Route exact path="/home">
             <Home />
           </Route>
-          <Route path="/tab3">
-            <Tab3 />
-          </Route>
+  
           <Route exact path="/">
             <Redirect to="/login" />
           </Route>
-          <Route exact path="/newpost">
+          <Route exact path="/new">
            <NewPost />
           </Route>
-        
+          <Redirect to="/login"/>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="Login" href="/login">
@@ -66,20 +61,19 @@ const App: React.FC = () => (
             <IonLabel>Login</IonLabel>
           </IonTabButton>
           <IonTabButton tab="Home" href="/home">
-            <IonIcon icon={ellipse} />
+            <IonIcon icon={homeSharp} />
             <IonLabel>Home</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon icon={square} />
-            <IonLabel>Tab 3</IonLabel>
+          <IonTabButton tab="newTweet" href="/new">
+            <IonIcon icon={addCircle} />
+            <IonLabel>New_Tweet</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="Newpost" href="/newpost">
-            <IonIcon icon={triangle} />
-            <IonLabel>New post</IonLabel>
-          </IonTabButton>
+          
         </IonTabBar>
       </IonTabs>
     </IonReactRouter>
+  
+    
   </IonApp>
 );
 

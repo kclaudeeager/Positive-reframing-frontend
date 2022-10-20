@@ -1,7 +1,8 @@
 import { IonRow, IonCol, IonButton, IonIcon, IonCard, IonItem, IonLabel, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonAvatar, IonText, IonList } from '@ionic/react';
 import React, { useState } from 'react';
-
+import parse from 'html-react-parser';
 import './TweetCard.css';
+import '../../src/theme/variables.css'
 /* Icons */
 import { chatbubbleOutline, heartOutline, heart, repeatOutline, exitOutline, colorFill } from 'ionicons/icons';
 import RepliesCard from '../components/RepliesCard';
@@ -25,14 +26,8 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     changeTweet:(id:string,action:string)=>void
 }> = props => {
 
-   const mentionsCreator=(mentions:Array<string>)=>{
-    return mentions.map((mention:string)=> {return <IonText key={`${mention}`}>{"@"+mention+" "}</IonText>});
-   }
-   const hashtagCreator=(hashtags:Array<string>)=>{
-      return hashtags.map((hashtag:string)=> {return <IonText key={`${hashtag}`}>{"#"+hashtag+" "}</IonText>});
-   }
-  const returnImages=(images:Array<{src:string,caption:string,name:string}>)=>{
-      return images.map((image:{src:string,caption:string,name:string})=>{return(<img  key={`${image.name}`} src={`${image.src}`} alt="img" className=' w-full'/>)})
+  const returnImages=(images:Array<{src:any,caption:string,name:string}>)=>{
+      return images.map((image:{src:string,caption:string,name:string})=>{return(<img  key={`${image.name}`} src={`${image.src}`} alt={image.name} className=' w-full'/>)})
   }
 
       const assignReaction = () => {
@@ -44,7 +39,24 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
       const addReplies = () => {
              props.changeTweet(props.tweet.id,"addReplies")
       }
+   const getMessege=(messege:string)=>{
+    var pragraph="<p>"
+    var messegeArray=messege.split(" ");
+    messegeArray.forEach((messege)=>{
+        if(messege.startsWith("#")){
+        pragraph+='<span className="hashtag">'+messege+'</span>'
+        }
+        else if( messege.startsWith("@")){
+            pragraph+='<span className="mention">'+messege+'</span>'
+        }
+        else{
+            pragraph+=" "+messege;
+        }
+    })
+    pragraph+=" </p>"
+    return  parse(pragraph);
 
+   }
     return(
         <>
 
@@ -54,15 +66,14 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
                 <img src={props.tweet.tweep.tweepPhoto} alt="" />
             </IonAvatar>
             <IonLabel>
-                <h3 style={{ display: "inline" }} >{props.tweet.tweep.tweepName}</h3> <p style={{ display: "inline" }}>{mentionsCreator(props.tweet.mentions)}</p> <p style={{ display: "inline" }} className='ion-margin-horizontal'>{props.tweet.timeLeft}</p>
+                <h3 style={{ display: "inline" }} >{props.tweet.tweep.tweepName}</h3>  <p style={{ display: "inline" }} className='ion-margin-horizontal'>{props.tweet.timeLeft}</p>
             </IonLabel>
         </IonItem>
           
         <IonCardContent>
-            <p>{props.tweet.message} <span className='hashtag'>{hashtagCreator(props.tweet.hashtags)}</span></p>
+            {getMessege(props.tweet.message)}
           <> {returnImages(props.tweet.images)}</>
         </IonCardContent>
-          
         <IonRow className='ion-justify-content-space-evenly ion-margin-horizontal'>
             <IonCol><button style={{ all: "unset" }} onClick={addReplies}><IonIcon id='clickableIcon' icon={chatbubbleOutline}></IonIcon>{props.tweet.replies.length}</button></IonCol>
             <IonCol><button style={{ all: "unset" }} onClick={assignReaction}><IonIcon color={props.tweet.isreacted ? 'danger' : ''} icon={props.tweet.isreacted ? heart : heartOutline}></IonIcon>{props.tweet.count}</button></IonCol>
