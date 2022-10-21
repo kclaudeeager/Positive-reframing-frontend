@@ -285,7 +285,7 @@ const NewPost = () => {
           <IonRow>
             <IonCol>
              <IonLabel>Add attachement</IonLabel>
-             <input type="file" accept="image/png, image/gif, image/jpeg" onChange={(ev)=>(uploadPhoto(ev))} />
+             <input type="file" accept="image/png, image/gif, image/jpeg, image/HEIC" onChange={(ev)=>(uploadPhoto(ev))} />
          </IonCol>
           </IonRow>
         

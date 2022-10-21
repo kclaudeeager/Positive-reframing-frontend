@@ -18,7 +18,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
         isreacted:boolean,
         count:number,
         displayReplies:boolean,
-        replies:Array<Object>,
+        replies:Array<any>,
         retweets:number,
         id:string
     
@@ -57,6 +57,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     return  parse(pragraph);
 
    }
+   
     return(
         <>
 
@@ -79,7 +80,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
             <IonCol><button style={{ all: "unset" }} onClick={assignReaction}><IonIcon color={props.tweet.isreacted ? 'danger' : ''} icon={props.tweet.isreacted ? heart : heartOutline}></IonIcon>{props.tweet.count}</button></IonCol>
             <IonCol><button style={{ all: "unset" }} onClick={() => console.log("retweet")}><IonIcon icon={repeatOutline}></IonIcon></button>{props.tweet.retweets}</IonCol>
             <IonCol><button style={{ all: "unset" }} onClick={() => console.log("archive")}><IonIcon id='rotate_icon' icon={exitOutline}></IonIcon></button></IonCol>
-            {props.tweet.displayReplies && <RepliesCard />}
+            {props.tweet.displayReplies && <RepliesCard tweet={props.tweet} addReplies={addReplies} />}
         </IonRow>
         </IonCard>
         </>
