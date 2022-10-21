@@ -11,14 +11,14 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     tweet:{
         mentions:Array<string>,
         message:string,
-        images:Array<{src:string,caption:string,name:string}>, 
+        images:any, 
         hashtags:Array<string>,
         tweep:{tweepName:string,tweepPhoto:string;},
         timeLeft:string;
         isreacted:boolean,
         count:number,
         displayReplies:boolean,
-        replies:Array<any>,
+        replies:any,
         retweets:number,
         id:string
     
@@ -26,8 +26,13 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     changeTweet:(id:string,action:string)=>void
 }> = props => {
 
-  const returnImages=(images:Array<{src:any,caption:string,name:string}>)=>{
-      return images.map((image:{src:string,caption:string,name:string})=>{return(<img  key={`${image.name}`} src={`${image.src}`} alt={image.name} className=' w-full'/>)})
+  const returnImages=(images:any)=>{
+    if(images.length>0)
+      return images.map((image:any)=>{return(<img  key={`${image.name}`} src={`${image.src}`} alt={image.name} className=' w-full'/>)})
+      else
+      return (
+        <></>
+      )
   }
 
       const assignReaction = () => {
@@ -35,7 +40,6 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
               
           }
          
-  
       const addReplies = () => {
              props.changeTweet(props.tweet.id,"addReplies")
       }
@@ -70,8 +74,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
                 <h3 style={{ display: "inline" }} >{props.tweet.tweep.tweepName}</h3>  <p style={{ display: "inline" }} className='ion-margin-horizontal'>{props.tweet.timeLeft}</p>
             </IonLabel>
         </IonItem>
-          
-        <IonCardContent>
+        <IonCardContent className=' w-60 h-auto'>
             {getMessege(props.tweet.message)}
           <> {returnImages(props.tweet.images)}</>
         </IonCardContent>

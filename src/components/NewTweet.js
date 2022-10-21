@@ -15,7 +15,7 @@ const NewPost = () => {
   const [tagNames, setTagNames] = useState([{}]);
   const myInput = useRef();
   const emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/;
-  const [image,setImage]=useState({})
+  const [image,setImage]=useState()
  
 
   // const [addedTweet,setAdded]=useState();
@@ -92,22 +92,22 @@ const NewPost = () => {
       newContent = newContent.split("t$$$__").join('<a href="/tag/');
       newContent = newContent.split("~~~__").join(`">#`);
       newContent = newContent.split("t$$$~~~").join("</a>");
-      var tweet={ 
+      let tweet={ 
         mentions:[],
         message:'',
-        images:[{}],
+        images:[],
         hashtags:[],
         tweep:{tweepName:'',tweepPhoto:''},
         timeLeft:'',
         isreacted:false,
         count:0,
         displayReplies:false,
-        replies:[{}],
+        replies:[],
         retweets:0,
         id:makeId(30)
       };
-      var hashtagList=[];
-      var mentionList=[];
+      const hashtagList=[];
+      const mentionList=[];
        
       if(newContent.match(/#[a-z0-9_]+/gi)){
        
@@ -131,12 +131,15 @@ const NewPost = () => {
         let body = newContent.trim();
         tweet.message=body;
        
-        var tweep={
+        const tweep={
           tweepName:"Bonnie",
            tweepPhoto:"https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
         };
         tweet.tweep=tweep;
-        tweet.images.push(image);
+        if(image){
+          tweet.images.push(image);
+        }
+        
       addTweet(tweet);
     
       }
@@ -150,13 +153,9 @@ const NewPost = () => {
       localStorage.setItem("tweets", JSON.stringify([tweet,...listTOtest]))
       console.log([tweet,...tweetList])
       setTweetList(prev => [tweet,...prev]);
-
-      //  setTweetList([...tweetList,tweet])
       window.location="/home";
     }
-    // useEffect(()=>{
-    //   localStorage.setItem("tweets", JSON.stringify(tweetList))
-    // },tweetList)
+
     const makeId=(length)=>{
       var result='';
       var characters='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -167,7 +166,6 @@ const NewPost = () => {
       return result
       }
   
-
   return (
     <IonPage>
       <IonContent>
