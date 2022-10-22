@@ -3,6 +3,7 @@ import { useEffect, useState, useRef,useCallback, createContext } from "react";
 import { MentionsInput, Mention } from "react-mentions";
 import { Link, useHistory } from "react-router-dom";
 import parse from 'html-react-parser';
+import axios from "axios";
 
 // import { APIservice } from "../services";
 import $ from "jquery"
@@ -13,13 +14,39 @@ const NewPost = () => {
   const [content, setContent] = useState("");
   const [users, setUsers] = useState([]);
   const [tagNames, setTagNames] = useState([{}]);
+  const [message,setMessage]=useState()
+  const [tweetBtnText,settweetBtnText]=useState("Tweet")
   const myInput = useRef();
   const emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/;
-  const [image,setImage]=useState()
- 
+  const [images,setImages]=useState([])
+  const [photos,setPhotos]=useState([])
+  const [enabled,setEnabled]=useState(true)
+  const history=useHistory();
 
+  const makeId=(length)=>{
+    var result='';
+    var characters='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charatersLength=characters.length
+    for(var i=0;i<length;i++){
+        result+=characters.charAt(Math.random()*charatersLength)
+    }
+    return result
+    }
   // const [addedTweet,setAdded]=useState();
-
+  let tweet={ 
+    mentions:[],
+    message:'',
+    images:[],
+    hashtags:[],
+    tweep:{tweepName:'',tweepPhoto:''},
+    timeLeft:'',
+    isreacted:false,
+    count:0,
+    displayReplies:false,
+    replies:[],
+    retweets:0,
+    id:makeId(30)
+  };
   useEffect(() => {
     getActors();
   
@@ -32,23 +59,62 @@ const NewPost = () => {
       setContent(input);
     }
   }
-  const uploadPhoto=(fileChamgeEvent)=>{
-    const photo=fileChamgeEvent.target.files[0];
-  
-    let formData=new FormData();
-    formData.append('attachement',photo,photo.name);
-    const path = (window.URL || window.webkitURL).createObjectURL(photo);
-    console.log(path)
-    setImage({
-      src:path
-      ,caption:"This is a caption",
-      name:photo.name
-    });
+  const   UploadImages=  async (file)=>{
+ 
+    settweetBtnText("waiting..")
+    setEnabled(false);
+    const FormData = require('form-data');
+    console.log("btn text",tweetBtnText)
+    setMessage("Uploading image...")
+    
+    let  imageObj;
+    const formData = new FormData();
+        formData.append('file', file);
+      formData.append('upload_preset', 'KC_PRESENT');
+      formData.append('folder','Postive-reframing');
+      const config = {
+        method: 'post',
+        url: 'https://api.cloudinary.com/v1_1/dhw5h8j3v/image/upload',
+        headers: formData.getHeaders ? formData.getHeaders():{ 'Content-Type': 'multipart/form-data' },
+        data : formData
+      };
+     await axios(config)
+      .then((response) => response.data).then((data)=>{
+        console.log(data)
+         imageObj={
+          src:data.secure_url,
+          caption: 'This is a caption',
+          name:data.original_filename
+          
+        }
+        console.log(imageObj)
+        setImages(prev => [...prev,imageObj])
+        setMessage("Uploaded image: "+imageObj.name)
+        settweetBtnText("Tweet")
+        setEnabled(true)
+        tweet.images.push(imageObj);
+        console.log("Tweettt ",tweet)
+        if(tweet.images.length==photos.length){
+          addTweet(tweet);
+        }
+      })
+      .catch(error=>{
+       console.log("Error occured>>",error)
+       setMessage("Error occured !")
+        setEnabled(false)
+       return null
+      })
+}
+
+
+  const  uploadPhoto=  (fileChamgeEvent)=>{
+    const photos= fileChamgeEvent.currentTarget.files;
+    setPhotos(photos);
   }
 
   async function getActors() {
     const usersArr = [];
-    for(var i=0;i<10;i++){
+    for(let i=0;i<10;i++){
         usersArr.push({
             id:i+1,
             display:"@Kwizera"+i
@@ -73,7 +139,7 @@ const NewPost = () => {
   if (!querry)
   return
    
-    if(tagNames.length==0)
+    if(tagNames.length===0)
      return {id:querry,display:querry}
      else{
       
@@ -82,89 +148,85 @@ const NewPost = () => {
 
   }
 
+   function setOtherFields(){
+    console.log("contents:  ",content)
+    console.log(images)
+    let newContent = content;
+    newContent = newContent.split("m@@@__").join('<a href="/user/');
+    newContent = newContent.split("^^^__").join(`">`);
+    newContent = newContent.split("m@@@^^^").join("</a>");
+    newContent = newContent.split("t$$$__").join('<a href="/tag/');
+    newContent = newContent.split("~~~__").join(`">#`);
+    newContent = newContent.split("t$$$~~~").join("</a>");
+   
+    const hashtagList=[];
+    const mentionList=[];
+     
+    if(newContent.match(/#[a-z0-9_]+/gi)){
+     
+      newContent.match(/#[a-z0-9_]+/gi).forEach((hashtag,index)=>{
+        hashtag= hashtag.substring(1)
+        hashtagList.push(hashtag)
+
+       });
+       tweet.hashtags=hashtagList;
+    }
+  if( newContent.match(/@[a-z0-9_]+/gi)){
+   newContent.match(/@[a-z0-9_]+/gi).forEach((mention,index)=>{
+    mention= mention.substring(1)
+    console.log("mention: ",mention)
+    mentionList.push(mention)
+   
+   });
+   tweet.mentions=mentionList;
+  
+  }
+    if (newContent !== "") {
+      let body = newContent.trim();
+      tweet.message=body;
+     
+      const tweep={
+        tweepName:"Bonnie",
+         tweepPhoto:"https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
+      };
+      tweet.tweep=tweep;
+     
+   }
+  }
     async function savePost(e) {
       e.preventDefault();
-       console.log("contents:  ",content)
-      let newContent = content;
-      newContent = newContent.split("m@@@__").join('<a href="/user/');
-      newContent = newContent.split("^^^__").join(`">`);
-      newContent = newContent.split("m@@@^^^").join("</a>");
-      newContent = newContent.split("t$$$__").join('<a href="/tag/');
-      newContent = newContent.split("~~~__").join(`">#`);
-      newContent = newContent.split("t$$$~~~").join("</a>");
-      let tweet={ 
-        mentions:[],
-        message:'',
-        images:[],
-        hashtags:[],
-        tweep:{tweepName:'',tweepPhoto:''},
-        timeLeft:'',
-        isreacted:false,
-        count:0,
-        displayReplies:false,
-        replies:[],
-        retweets:0,
-        id:makeId(30)
-      };
-      const hashtagList=[];
-      const mentionList=[];
-       
-      if(newContent.match(/#[a-z0-9_]+/gi)){
-       
-        newContent.match(/#[a-z0-9_]+/gi).forEach((hashtag,index)=>{
-          hashtag= hashtag.substring(1)
-          hashtagList.push(hashtag)
-
-         });
-         tweet.hashtags=hashtagList;
+      setOtherFields();
+      console.log("Photos number>>",photos.length)
+      if(photos.length==0){
+        addTweet(tweet)
       }
-    if( newContent.match(/@[a-z0-9_]+/gi)){
-     newContent.match(/@[a-z0-9_]+/gi).forEach((mention,index)=>{
-      mention= mention.substring(1)
-      console.log("mention: ",mention)
-      mentionList.push(mention)
-     
-     });
-     tweet.mentions=mentionList;
-    }
-      if (newContent !== "") {
-        let body = newContent.trim();
-        tweet.message=body;
-       
-        const tweep={
-          tweepName:"Bonnie",
-           tweepPhoto:"https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
-        };
-        tweet.tweep=tweep;
-        if(image){
-          tweet.images.push(image);
+      else{
+        for (const photo in photos) {
+          if (Object.hasOwnProperty.call(photos, photo)) {
+            const element = photos[photo];
+             UploadImages(element);
+          }
         }
-        
-      addTweet(tweet);
-    
       }
+     
+    
+      
     }
   //   :{
      
   // }
-    const addTweet=(tweet)=>{
+    const addTweet=  (tweet)=>{
       console.log(tweet)
       const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
       localStorage.setItem("tweets", JSON.stringify([tweet,...listTOtest]))
       console.log([tweet,...tweetList])
       setTweetList(prev => [tweet,...prev]);
-      window.location="/home";
+     window.location="/home";
+    //   setTimeout(() => {
+    //     window.location="/home";
+    //  }, 1000);
     }
 
-    const makeId=(length)=>{
-      var result='';
-      var characters='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      var charatersLength=characters.length
-      for(var i=0;i<length;i++){
-          result+=characters.charAt(Math.random()*charatersLength)
-      }
-      return result
-      }
   
   return (
     <IonPage>
@@ -194,7 +256,7 @@ const NewPost = () => {
           </IonCol>
           <IonCol>
           <button className="btn border border-indigo-500 p-1 px-4 font-semibold cursor-pointer text-gray-200 ml-2 bg-indigo-500 rounded-full py-1">
-            Tweet
+            {tweetBtnText}
           </button>
           </IonCol>
           </IonRow>
@@ -248,7 +310,6 @@ const NewPost = () => {
           }, [])}
           style={{ backgroundColor: "#d1c4e9" }}
         />
-          
           </MentionsInput>
         </div>
 
@@ -283,7 +344,9 @@ const NewPost = () => {
           <IonRow>
             <IonCol>
              <IonLabel>Add attachement</IonLabel>
-             <input type="file" accept="image/png, image/gif, image/jpeg, image/HEIC" onChange={(ev)=>(uploadPhoto(ev))} />
+             <input type="file" accept="image/png, image/gif, image/jpeg, image/HEIC" multiple name="file" async onChange={(ev)=>(uploadPhoto(ev))} />
+         </IonCol><IonCol>
+          <IonLabel>{message}</IonLabel>
          </IonCol>
           </IonRow>
         

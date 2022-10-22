@@ -1,10 +1,10 @@
-import { IonRow, IonCol, IonButton, IonIcon, IonCard, IonItem, IonLabel, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonAvatar, IonText, IonList } from '@ionic/react';
+import { IonRow, IonCol, IonButton, IonIcon, IonCard, IonItem, IonLabel, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonAvatar, IonText, IonList, IonThumbnail, IonImg, IonGrid } from '@ionic/react';
 import React, { useState } from 'react';
 import parse from 'html-react-parser';
 import './TweetCard.css';
 import '../../src/theme/variables.css'
 /* Icons */
-import { chatbubbleOutline, heartOutline, heart, repeatOutline, exitOutline, colorFill } from 'ionicons/icons';
+import { chatbubbleOutline, heartOutline, heart, repeatOutline, exitOutline, colorFill, image } from 'ionicons/icons';
 import RepliesCard from '../components/RepliesCard';
 
 const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ; 
@@ -27,12 +27,18 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
 }> = props => {
 
   const returnImages=(images:any)=>{
-    if(images.length>0)
-      return images.map((image:any)=>{return(<img  key={`${image.name}`} src={`${image.src}`} alt={image.name} className=' w-full'/>)})
-      else
-      return (
-        <></>
-      )
+   
+        return images.map((image:any,i:number)=>{return(
+            <div key={i} className="w-full" >
+                <img className='inset-0 h-full w-full object-cover object-center rounded opacity-75 hover:opacity-100 ' src={image.src}  alt={image.name} onClick={()=>{
+                  
+                    window.open(image.src)
+                }}/>
+          </div>
+              )})
+
+     
+     
   }
 
       const assignReaction = () => {
@@ -61,6 +67,18 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     return  parse(pragraph);
 
    }
+   const getImagesDiv=(images:any)=>{
+    if(images.length>0){
+        return(
+            <div className='grid grid-cols-3 grid-rows-2  grid-flow-col gap-2'>{returnImages(images)}</div>
+        )
+    }
+    else{
+        return(
+         null
+        )
+    }
+   }
    
     return(
         <>
@@ -74,9 +92,9 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
                 <h3 style={{ display: "inline" }} >{props.tweet.tweep.tweepName}</h3>  <p style={{ display: "inline" }} className='ion-margin-horizontal'>{props.tweet.timeLeft}</p>
             </IonLabel>
         </IonItem>
-        <IonCardContent className=' w-60 h-auto'>
+        <IonCardContent className=' w-60 container lg:px-30 px-4 py-8 mx-auto items-center'>
             {getMessege(props.tweet.message)}
-          <> {returnImages(props.tweet.images)}</>
+           { getImagesDiv(props.tweet.images)}
         </IonCardContent>
         <IonRow className='ion-justify-content-space-evenly ion-margin-horizontal'>
             <IonCol><button style={{ all: "unset" }} onClick={addReplies}><IonIcon id='clickableIcon' icon={chatbubbleOutline}></IonIcon>{props.tweet.replies.length}</button></IonCol>

@@ -40,11 +40,11 @@ const Login: React.FC = () => {
     }
 
 
-var FormData = require('form-data');
-var data = new FormData();
+const FormData = require('form-data');
+const data = new FormData();
 data.append('username', username);
 data.append('password', password);
-var config = {
+const config = {
   method: 'post',
   url: 'http://127.0.0.1:8000/api/users/login',
   headers: data.getHeaders ? data.getHeaders():{ 'Content-Type': 'multipart/form-data' },
@@ -53,7 +53,7 @@ var config = {
 axios(config)
 .then((response) => {
   console.log(JSON.stringify(response.data));
-  history.push("/bmi/");
+  history.push("/home/");
 })
 .catch(error=>{
   setMessage("Auth failure! Please create an account");
