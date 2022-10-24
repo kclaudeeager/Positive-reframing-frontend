@@ -6,7 +6,8 @@ import '../../src/theme/variables.css'
 /* Icons */
 import { chatbubbleOutline, heartOutline, heart, repeatOutline, exitOutline, colorFill, image } from 'ionicons/icons';
 import RepliesCard from '../components/RepliesCard';
-
+import TweetWithReplies from './TweetWithReplies';
+import { useHistory } from 'react-router';
 const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ; 
     tweet:{
         mentions:Array<string>,
@@ -20,12 +21,14 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
         displayReplies:boolean,
         replies:any,
         retweets:number,
-        id:string
+        id:string,
+        tweetId:''
     
     }
     changeTweet:(id:string,action:string)=>void
 }> = props => {
 
+    const history=useHistory()
   const returnImages=(images:any)=>{
    
         return images.map((image:any,i:number)=>{return(
@@ -79,6 +82,12 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
         )
     }
    }
+   function goToReplies(){
+//     //history.push("/home/"+props.tweet.id)
+//  window.open("/home/"+props.tweet.id)
+ window.location.assign("/home/"+props.tweet.id);
+
+}
    
     return(
         <>
@@ -92,7 +101,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
                 <h3 style={{ display: "inline" }} >{props.tweet.tweep.tweepName}</h3>  <p style={{ display: "inline" }} className='ion-margin-horizontal'>{props.tweet.timeLeft}</p>
             </IonLabel>
         </IonItem>
-        <IonCardContent className=' w-60 container lg:px-30 px-4 py-8 mx-auto items-center'>
+        <IonCardContent className=' w-60 container lg:px-30 px-4 py-8 mx-auto items-center' onClick={()=>goToReplies()}>
             {getMessege(props.tweet.message)}
            { getImagesDiv(props.tweet.images)}
         </IonCardContent>
@@ -109,3 +118,5 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
 
 }
 export default TweetItem;
+
+

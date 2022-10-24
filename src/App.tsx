@@ -33,9 +33,13 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import NewPost from './components/NewTweet';
+import TweetWithReplies from './components/TweetWithReplies';
+
+
 
 setupIonicReact();
 const App: React.FC = () => (
+
   <IonApp>
       <IonReactRouter>
       <IonTabs>
@@ -45,8 +49,11 @@ const App: React.FC = () => (
           </Route>
           <Route exact path="/home">
             <Home />
+           
           </Route>
-  
+          <Route path="/home/:tweetId">
+          <TweetWithReplies/>
+            </Route>
           <Route exact path="/">
             <Redirect to="/login" />
           </Route>
@@ -54,6 +61,7 @@ const App: React.FC = () => (
            <NewPost />
           </Route>
           <Redirect to="/login"/>
+         
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="Login" href="/login">

@@ -11,7 +11,7 @@ import React from 'react';
 const Home: React.FC = () => {
 const [tweetList,setTweetList]=useState<Array<Object>>([])
 const addChanges=()=>{
-  var listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
+  const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
   setTweetList(listTOtest)
 }
  useEffect(()=>{

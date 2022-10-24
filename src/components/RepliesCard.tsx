@@ -24,8 +24,10 @@ addReplies:()=>void
     const [reply, setReply] = useState<any>();
     const [users, setUsers] = useState<any>([]);
     const [tagNames, setTagNames] = useState<any>([{}]);
+    const [message,setMessage]=useState()
     const emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/;
     const myInput = useRef<any>();
+    const [photos,setPhotos]=useState<any>([])
     useEffect(()=>{
         getActors();
     },[])
@@ -49,7 +51,7 @@ addReplies:()=>void
         message:'',
         images:[],
         hashtags:[],
-        tweep:{},
+        tweep:{tweepName:'',tweepPhoto:''},
         timeLeft:'',
         isreacted:false,
         count:0,
@@ -131,6 +133,10 @@ addReplies:()=>void
     setTagNames(hashtags)
   
   }
+  const  uploadPhoto=  (fileChamgeEvent: React.ChangeEvent<HTMLInputElement>)=>{
+    const photos= fileChamgeEvent.currentTarget.files;
+    setPhotos(photos);
+  }
 
     return (
 
@@ -189,6 +195,15 @@ addReplies:()=>void
             </IonItem>
             <button  style={{ all: "unset" }} type="submit"><IonIcon className='' color='primary' icon={send}></IonIcon></button>
         </IonRow>
+        <IonRow>
+            <IonCol>
+             <IonLabel>Add attachement</IonLabel>
+             <input type="file" accept="image/png, image/gif, image/jpeg, image/HEIC" multiple name="file" onChange={(ev)=>(uploadPhoto(ev))} />
+         </IonCol><IonCol>
+          <IonLabel>{message}</IonLabel>
+         </IonCol>
+          </IonRow>
+        
         </form>
         </>
 
@@ -197,3 +212,5 @@ addReplies:()=>void
 };
 
 export default RepliesCard;
+
+

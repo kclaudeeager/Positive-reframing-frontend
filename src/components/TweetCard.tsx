@@ -46,6 +46,7 @@ const TweetCard: React.FC<{
      
     <div className=' grid grid-cols-1 md:grid-cols-3 '>
         {props.tweetList.map((item:any)=>{
+            
             return <IonRow  key={`${item.id}`} className="mx-auto"><TweetItem tweet={item} onCalculate={function (): void {
                 throw new Error('Function not implemented.');
             } } onReset={function (): void {
