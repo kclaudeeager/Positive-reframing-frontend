@@ -14,7 +14,7 @@ const   TweetWithReplies:React.FC<{
     const [tweetRepliesList,setTweetRepliesList]=useState<any>([]);
     const [isHide, setIsHide] = useState(true);
 
-    setTimeout(() => setIsHide(false), 1000);
+    // setTimeout(() => setIsHide(false), 1000);
     const addChanges=()=>{
       setTweetList((prev)=>{
         let isFound=false;
@@ -150,6 +150,7 @@ const getTweetCard=()=>{
 
         
     })
+    setIsHide(false)
  }
  
 useEffect(()=>{
