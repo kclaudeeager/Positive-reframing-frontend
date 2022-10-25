@@ -53,6 +53,8 @@ const config = {
 axios(config)
 .then((response) => {
   console.log(JSON.stringify(response.data));
+  console.log("Token to save: ",response.data.access_token)
+  localStorage.setItem("token",response.data.access_token)
   history.push("/home/");
 })
 .catch(error=>{

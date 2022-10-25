@@ -7,6 +7,7 @@ import TweetCard from '../components/TweetCard';
 import { useEffect, useState } from 'react';
 import { TweetListContext } from '../components/NewTweet';
 import React from 'react';
+import { getTweets } from '../backendIntractions/TweetServices';
 
 const Home: React.FC = () => {
 const [tweetList,setTweetList]=useState<Array<Object>>([])
@@ -19,6 +20,9 @@ const addChanges=()=>{
   setTweetList(listTOtest)
  //localStorage.removeItem("tweets")
   console.log("trying the list: ",listTOtest)
+  const token:string=localStorage.getItem("token")||""
+  console.log(token)
+  getTweets(token);
 },[])
   return (
     
