@@ -5,24 +5,53 @@ import { logoTwitter } from 'ionicons/icons'
 import './Home.css';
 import TweetCard from '../components/TweetCard';
 import { useEffect, useState } from 'react';
-import { TweetListContext } from '../components/NewTweet';
 import React from 'react';
-import { getTweets } from '../backendIntractions/TweetServices';
+import axios from 'axios';
 
 const Home: React.FC = () => {
-const [tweetList,setTweetList]=useState<Array<Object>>([])
+const [tweetList,setTweetList]=useState<any>([])
+const [token,setToken]=useState<any>()
+
 const addChanges=()=>{
-  const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
-  setTweetList(listTOtest)
+  getTweets(token)
 }
- useEffect(()=>{
-  const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
-  setTweetList(listTOtest)
+const getTweets=async(token:string)=>{
+
+  const config = {
+    method: 'get',
+    url: 'http://127.0.0.1:8000/api/tweets/',
+    headers: { 
+      'Authorization': 'Bearer '+token
+    }
+  };
+  
+  axios(config)
+  .then( async (response: { data: any; })=> {
+   const tweets:Array<any>=response.data.tweets 
+    console.log(tweets)
+    tweets.forEach(tweet => {
+      tweet['tweep']={tweepPhoto:"",tweepName:"Bonnie"}
+    });
+    setTweetList(tweets)
+  })
+  .catch(function (error: any) {
+    console.log(error);
+    window.location.assign("/")
+  });
+ 
+}
+
+ useEffect( ()=>{
+
+  //console.log("trying the list: ",listTOtest)
+  //setTweetList(listTOtest)
+ 
  //localStorage.removeItem("tweets")
-  console.log("trying the list: ",listTOtest)
-  const token:string=localStorage.getItem("token")||""
+ const token:string=localStorage.getItem("token")||""
+ setToken(token)
   console.log(token)
-  getTweets(token);
+  getTweets(token)
+ 
 },[])
   return (
     

@@ -37,7 +37,7 @@ const NewPost = () => {
   let tweet={ 
     mentions:[],
     message:'',
-    images:[],
+    attachements:[],
     hashtags:[],
     tweep:{tweepName:'',tweepPhoto:''},
     timeLeft:'',
@@ -91,9 +91,8 @@ const NewPost = () => {
         console.log(imageObj)
         setImages(prev => [...prev,imageObj])
         setMessage("Uploaded image: "+imageObj.name)
-        settweetBtnText("Tweet")
         setEnabled(true)
-        tweet.images.push(imageObj);
+        tweet.attachements.push(imageObj);
         console.log("Tweettt ",tweet)
         if(tweet.images.length==photos.length){
           addTweet(tweet);

@@ -6,13 +6,13 @@ import './TweetCard.css';
 import { chatbubbleOutline, heartOutline, heart, repeatOutline, exitOutline, colorFill } from 'ionicons/icons';
 import RepliesCard from '../components/RepliesCard';
 import TweetItem from './Tweet';
-
+import { updateTweet } from '../backendIntractions/TweetServices';
 const TweetCard: React.FC<{ 
     tweetList:Array<Object>
     setTweetList:(tweetList:Array<Object>)=>void
     addChanges:()=>void
 }> = props => {
-   
+    const token:string=localStorage.getItem("token")||""
    const changeTweet=(id:string,action:string)=>{
   var tweets= props.tweetList
   tweets.map((item:any)=>{
@@ -34,10 +34,12 @@ const TweetCard: React.FC<{
         if(action=="addReplies"){
           item.displayReplies=!item.displayReplies
         }
-    
+       
+        updateTweet(token,item)
     }
-    props.setTweetList(tweets)
-    localStorage.setItem("tweets",JSON.stringify(props.tweetList))
+    // props.setTweetList(tweets)
+    
+    // localStorage.setItem("tweets",JSON.stringify(props.tweetList))
     props.addChanges()
     
 })

@@ -8,7 +8,7 @@ import { MentionsInput, Mention } from 'react-mentions';
 const RepliesCard: React.FC<{tweet:{
     mentions:Array<string>,
     message:string,
-    images:any, 
+    attachements:any, 
     hashtags:Array<string>,
     tweep:{tweepName:string,tweepPhoto:string;},
     timeLeft:string;
@@ -49,7 +49,7 @@ addReplies:()=>void
         tweetId:'',
         mentions:[],
         message:'',
-        images:[],
+        attachements:[],
         hashtags:[],
         tweep:{tweepName:'',tweepPhoto:''},
         timeLeft:'',
@@ -98,6 +98,10 @@ addReplies:()=>void
       let body = newContent.trim();
       newReply.message=body;
       newReply.tweetId=props.tweet.id;
+
+      //Here I will save the repy
+
+      
       props.tweet.replies.push(newReply)
       console.log( props.tweet)
     //   props.tweet.count+=1;

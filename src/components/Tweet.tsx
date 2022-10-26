@@ -12,7 +12,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     tweet:{
         mentions:Array<string>,
         message:string,
-        images:any, 
+        attachements:any, 
         hashtags:Array<string>,
         tweep:{tweepName:string,tweepPhoto:string;},
         timeLeft:string;
@@ -103,7 +103,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
         </IonItem>
         <IonCardContent className=' w-60 container lg:px-30 px-4 py-8 mx-auto items-center' onClick={()=>goToReplies()}>
             {getMessege(props.tweet.message)}
-           { getImagesDiv(props.tweet.images)}
+           { getImagesDiv(props.tweet.attachements)}
         </IonCardContent>
         <IonRow className='ion-justify-content-space-evenly ion-margin-horizontal'>
             <IonCol><button style={{ all: "unset" }} onClick={addReplies}><IonIcon id='clickableIcon' icon={chatbubbleOutline}></IonIcon>{props.tweet.replies.length}</button></IonCol>
