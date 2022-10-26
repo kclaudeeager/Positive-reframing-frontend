@@ -14,6 +14,7 @@ export const createTweet= async( token:string, tweet:{
     tweetId:''
 
 })=>{
+  console.log("Started with ",tweet)
     const data = JSON.stringify(tweet);
     const config = {
       method: 'post',
@@ -28,6 +29,7 @@ export const createTweet= async( token:string, tweet:{
     axios(config)
     .then(function (response: { data: any; }) {
       console.log(JSON.stringify(response.data));
+     window.location.assign("/home");
     })
     .catch(function (error: any) {
       console.log(error);

@@ -4,6 +4,7 @@ import { MentionsInput, Mention } from "react-mentions";
 import { Link, useHistory } from "react-router-dom";
 import parse from 'html-react-parser';
 import axios from "axios";
+import {createTweet} from '../backendIntractions/TweetServices';
 
 // import { APIservice } from "../services";
 import $ from "jquery"
@@ -217,11 +218,14 @@ const NewPost = () => {
   // }
     const addTweet=  (tweet)=>{
       console.log(tweet)
+      const token=localStorage.getItem("token")||""
+      console.log(token)
+      createTweet(token,tweet)
       const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
       localStorage.setItem("tweets", JSON.stringify([tweet,...listTOtest]))
       console.log([tweet,...tweetList])
       setTweetList(prev => [tweet,...prev]);
-     window.location="/home";
+    
     //   setTimeout(() => {
     //     window.location="/home";
     //  }, 1000);

@@ -39,7 +39,6 @@ const Login: React.FC = () => {
         return;
     }
 
-
 const FormData = require('form-data');
 const data = new FormData();
 data.append('username', username);
@@ -59,6 +58,7 @@ axios(config)
 })
 .catch(error=>{
   setMessage("Auth failure! Please create an account");
+  console.log(error)
   setIserror(true)
 })
   };
