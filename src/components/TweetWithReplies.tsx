@@ -1,42 +1,31 @@
-import { IonBackButton, IonCol, IonIcon, IonImg, IonItem, IonPage, IonRow } from "@ionic/react";
+import { IonBackButton, IonCol, IonContent, IonIcon, IonImg, IonItem, IonPage, IonRow } from "@ionic/react";
 import axios from "axios";
 import { FormEventHandler, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { updateTweet } from "../backendIntractions/TweetServices";
+import RepliesCard from "./RepliesCard";
 import TweetItem from "./Tweet";
-import TweetCard from "./TweetCard";
+
 
 const   TweetWithReplies:React.FC<{
  
 }> = props  => {
    const [tweet,setTweet]=useState<any>()
-
     const [tweetList,setTweetList]=useState<Array<Object>>([])
     const [tweetRepliesList,setTweetRepliesList]=useState<any>([]);
     const [isHide, setIsHide] = useState(true);
-
+    const [token,setToken]=useState<any>()
+    const[url,setUrl]= useState<string>('http://127.0.0.1:8000/api/')
     // setTimeout(() => setIsHide(false), 1000);
     const addChanges=()=>{
-      setTweetList((prev)=>{
-        let isFound=false;
-        prev.forEach((prev:any)=>{
-        if(prev.id==tweet.id){
-            isFound=true;
-        }
-        })
-        if(!isFound){
-            return [...prev, tweet];
-        }
-        return [...prev]
-        
-    }
-        )
-
-    }
-
+        getTweets(token)
+      }
     const changeTweet=(id:string,action:string)=>{
-        console.log("Tweet id ",id)
-        if(tweet.id==id){
+       
+        if(tweet._id==id){
+            setUrl('http://127.0.0.1:8000/api/'+tweet.url+id)
             if(action=="assignReaction"){
+                console.log("I am clicked...")
                     if (tweet.isreacted == false) {
                         tweet.isreacted=true
                         tweet.count=tweet.count+1
@@ -52,14 +41,46 @@ const   TweetWithReplies:React.FC<{
             if(action=="addReplies"){
                 tweet.displayReplies=!tweet.displayReplies
             }
+            updateTweet(token,tweet,'http://127.0.0.1:8000/api/'+tweet.url+id)
         }
         setTweet(tweet);
         addChanges();
     }
+const changeTweetReplies=(id:string,action:string)=>{
+    tweetRepliesList.map((item:any)=>{
+        console.log("Tweet id ",id)
+        console.log("Tweet id1 ",item._id)
+          if(item._id==id){
+              setUrl('http://127.0.0.1:8000/api/'+item.url+id)
+          if(action=="assignReaction"){
+              console.log("I am called.....")
+                  if (item.isreacted == false) {
+                      item.isreacted=true
+                      item.count=item.count+1
+                      console.log(item.count, item.isreacted)
+                  }
+                  else{
+                      item.isreacted=false
+                      item.count= item.count -1
+                    
+                  }
+          }
+          if(action=="addReplies"){
+            item.displayReplies=!item.displayReplies
+          }
+          updateTweet(token,item,'http://127.0.0.1:8000/api/'+item.url+id)
+      }
+    })
+    
+    addChanges();
+}
 
     const addChangesToTweetReplies=()=>{
         setTweetRepliesList(tweetRepliesList)
     }
+    const addReplies = () => {
+       
+ }
 
 const getTweetReplies=()=>{
     console.log("my tweetRepliesList ",tweetRepliesList)
@@ -69,12 +90,12 @@ const getTweetReplies=()=>{
     return (
     <div className=' grid grid-cols-1 md:grid-cols-3 '>
     {tweetRepliesList.map((item:any)=>{
-
-return (<IonRow  key={`${item.id}`} className="mx-auto"><TweetItem tweet={item} onCalculate={function (): void {
+ item['url']="replies/"
+return (<IonRow  key={`${item._id}`} className="mx-auto"><TweetItem tweet={item} onCalculate={function (): void {
     throw new Error('Function not implemented.');
 } } onReset={function (): void {
     throw new Error('Function not implemented.');
-} } changeTweet={changeTweet}/></IonRow>
+} } changeTweet={changeTweetReplies}/></IonRow>
 ) 
     })}
 </ div>  
@@ -82,8 +103,14 @@ return (<IonRow  key={`${item.id}`} className="mx-auto"><TweetItem tweet={item} 
 }
 const getTweetCard=()=>{
   console.log("Found tweet: ",tweet)
+  if(tweet.tweet_id!=undefined){
+    tweet['url']='replies/'
+  }
+  else{
+      tweet['url']='tweets/'
+  }
     return (
-        <div className=' grid grid-cols-1 md:grid-cols-3 '><IonRow  key={`${tweet.id}`} className="mx-auto"><TweetItem tweet={tweet} onCalculate={function (): void {
+        <div className=' grid grid-cols-1 md:grid-cols-3 '><IonRow  key={`${tweet._id}`} className="mx-auto"><TweetItem tweet={tweet} onCalculate={function (): void {
         throw new Error('Function not implemented.');
     } } onReset={function (): void {
         throw new Error('Function not implemented.');
@@ -96,15 +123,22 @@ const getTweetCard=()=>{
  const renderTweets=(tweets:any)=>{
     console.log("sent tweets: ",tweets)
     tweets.map((tweet:any)=>{
-        console.log(" found tweet id: ",tweet.id)
+        console.log(" found tweet id: ",tweet._id)
         console.log("sent one: ",tweetId)
-        if(tweet.id==tweetId){
+        console.log(tweet)
+        if(tweet.tweet_id!=undefined){
+          tweet['url']='replies/'
+        }
+        else{
+            tweet['url']='tweets/'
+        }
+        if(tweet._id==tweetId){
             setTweet(tweet)
 
             setTweetList((prev)=>{
                 let isFound=false;
                 prev.forEach((prev:any)=>{
-                if(prev.id==tweet.id){
+                if(prev._id==tweet._id){
                     isFound=true;
                 }
                 })
@@ -123,12 +157,12 @@ const getTweetCard=()=>{
             }
 
             tweet.replies.forEach((reply:any) => {
-                if(reply.id==tweetId){
+                if(reply._id==tweetId){
                     setTweet(reply)
                     setTweetList((prev)=>{
                         let isFound=false;
                         prev.forEach((prev:any)=>{
-                        if(prev.id==reply.id){
+                        if(prev._id==reply._id){
                             isFound=true;
                         }
                         })
@@ -153,22 +187,69 @@ const getTweetCard=()=>{
     setIsHide(false)
  }
  
+
+const getTweets=async(token:string)=>{
+
+    const config = {
+      method: 'get',
+      url: 'http://127.0.0.1:8000/api/tweets/',
+      headers: { 
+        'Authorization': 'Bearer '+token
+      }
+    };
+    
+    axios(config)
+    .then( async (response: { data: any; })=> {
+     const tweets:Array<any>= await response.data.tweets 
+      console.log(tweets)
+      tweets.forEach(tweet => {
+ 
+        tweet['tweep']={tweepName:"Bonnie",
+        tweepPhoto:"https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" } 
+        tweet['url']="tweets/"
+        if(tweet['replies']){
+         console.log("replies>> ",tweet['replies'])
+        //  tweet['url']="tweets/"
+        tweet['replies'].forEach((reply:any)=>{
+            reply['url']='replies/'
+            reply['tweep']= {tweepName:"Bonnie",
+            tweepPhoto:"https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" } 
+        })
+       
+        }
+      });
+    
+      renderTweets(tweets);
+    })
+    .catch(function (error: any) {
+      console.log(error);
+      window.location.assign("/")
+    });
+   
+  }
 useEffect(()=>{
     console.log("Id found:: ",tweetId)
-    const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
-    renderTweets(listTOtest);
+    const token:string=localStorage.getItem("token")||""
+     setToken(token)
+     getTweets(token)
+    // const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
+    // renderTweets(listTOtest);
     console.log("tweet found",tweet)
 },[])
 
     return(
         <IonPage>
+        <IonContent>
         <div className="border border-b-gray">
           {!isHide ? getTweetCard(): null}
         {/* <TweetCard tweetList={tweetList} setTweetList={setTweetList} addChanges={addChanges}/> */}
         </div>
-       <div>
+       <div  className="border border-b-gray">
         {!isHide ? getTweetReplies(): null}
        </div>
+     <div className=" mx-auto w-48 flex justify-self-center" ><RepliesCard tweet={tweet} addReplies={addReplies} /></div> 
+        </IonContent>
+     
         </IonPage>
     )
 }

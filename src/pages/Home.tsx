@@ -27,11 +27,14 @@ const getTweets=async(token:string)=>{
   
   axios(config)
   .then( async (response: { data: any; })=> {
-   const tweets:Array<any>=response.data.tweets 
+   const tweets:Array<any>= await response.data.tweets 
     console.log(tweets)
     tweets.forEach(tweet => {
-      tweet['tweep']={tweepPhoto:"",tweepName:"Bonnie"}
+      tweet['tweep']={tweepName:"Bonnie",
+      tweepPhoto:"https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" } 
+      tweet['url']="tweets/"
     });
+
     setTweetList(tweets)
   })
   .catch(function (error: any) {
@@ -51,7 +54,6 @@ const getTweets=async(token:string)=>{
  setToken(token)
   console.log(token)
   getTweets(token)
- 
 },[])
   return (
     

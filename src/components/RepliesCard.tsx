@@ -4,20 +4,22 @@ import {send} from 'ionicons/icons';
 
 import './RepliesCard.css';
 import { MentionsInput, Mention } from 'react-mentions';
+import { createTweet } from '../backendIntractions/TweetServices';
 
 const RepliesCard: React.FC<{tweet:{
     mentions:Array<string>,
     message:string,
     attachements:any, 
     hashtags:Array<string>,
-    tweep:{tweepName:string,tweepPhoto:string;},
     timeLeft:string;
     isreacted:boolean,
     count:number,
     displayReplies:boolean,
     replies:any,
     retweets:number,
-    id:string
+    _id:string,
+    tweet_id:string
+   
 }
 addReplies:()=>void
 }> = props => {
@@ -28,7 +30,10 @@ addReplies:()=>void
     const emailRegex = /(([^\s@]+@[^\s@]+\.[^\s@]+))$/;
     const myInput = useRef<any>();
     const [photos,setPhotos]=useState<any>([])
+    const [token,setToken]=useState<any>()
     useEffect(()=>{
+      const token:string=localStorage.getItem("token")||""
+      setToken(token)
         getActors();
     },[])
     const makeId=(length: number)=>{
@@ -46,19 +51,18 @@ addReplies:()=>void
     console.log("Just clicked")
     console.log("Repy",reply)
     let newReply={ 
-        tweetId:'',
+        tweet_id:'',
         mentions:[],
         message:'',
         attachements:[],
         hashtags:[],
-        tweep:{tweepName:'',tweepPhoto:''},
         timeLeft:'',
         isreacted:false,
         count:0,
         displayReplies:false,
         replies:[],
         retweets:0,
-        id:makeId(30)
+       
       };
     if(reply?.length){
         let newContent = reply;
@@ -94,18 +98,21 @@ addReplies:()=>void
         tweepName:"Bonnie",
          tweepPhoto:"https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" 
       };
-      newReply.tweep=tweep;
+      // newReply.tweep=tweep;
       let body = newContent.trim();
       newReply.message=body;
-      newReply.tweetId=props.tweet.id;
+      newReply.tweet_id=props.tweet._id;
 
       //Here I will save the repy
-
-      
-      props.tweet.replies.push(newReply)
+      const currentLocation=window.location
+      console.log(currentLocation)
+      createTweet(token,newReply,'http://127.0.0.1:8000/api/replies/',window.location.href).then(replies=>{ 
       console.log( props.tweet)
+      props.addReplies()})
+      //props.tweet.replies.push(newReply)
+     
     //   props.tweet.count+=1;
-      props.addReplies();
+     
     }
  }
  const addContent=(inputValue:any)=>{
@@ -146,7 +153,7 @@ addReplies:()=>void
 
         <>
         <form onSubmit={addReply}>
-        <IonRow >
+        <IonRow>
             <IonItem>
               
                 {/* <IonInput type="text" value={reply} onIonChange={e=>{

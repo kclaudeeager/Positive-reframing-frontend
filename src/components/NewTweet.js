@@ -23,6 +23,7 @@ const NewPost = () => {
   const [photos,setPhotos]=useState([])
   const [enabled,setEnabled]=useState(true)
   const history=useHistory();
+  const [token,setToken]=useState()
 
   const makeId=(length)=>{
     var result='';
@@ -46,9 +47,13 @@ const NewPost = () => {
     displayReplies:false,
     replies:[],
     retweets:0,
-    id:makeId(30)
   };
   useEffect(() => {
+    const token=localStorage.getItem("token")
+    setToken(token)
+    if(token==null){
+      window.location.assign("/")
+    }
     getActors();
   
   }, []);
@@ -217,12 +222,10 @@ const NewPost = () => {
   // }
     const addTweet=  (tweet)=>{
       console.log(tweet)
-      const token=localStorage.getItem("token")||""
-      console.log(token)
-      createTweet(token,tweet)
-      const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
-      localStorage.setItem("tweets", JSON.stringify([tweet,...listTOtest]))
-      console.log([tweet,...tweetList])
+      createTweet(token,tweet,'http://127.0.0.1:8000/api/tweets/',"/home")
+      // const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
+      // localStorage.setItem("tweets", JSON.stringify([tweet,...listTOtest]))
+      // console.log([tweet,...tweetList])
       setTweetList(prev => [tweet,...prev]);
     
     //   setTimeout(() => {

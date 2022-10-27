@@ -11,14 +11,14 @@ export const createTweet= async( token:string, tweet:{
     displayReplies:boolean,
     replies:any,
     retweets:number,
-    tweetId:''
+    tweet_id:string
 
-})=>{
+},url:string,location:string)=>{
   console.log("Started with ",tweet)
     const data = JSON.stringify(tweet);
     const config = {
       method: 'post',
-      url: 'http://127.0.0.1:8000/api/tweets/',
+      url: url,
       headers: { 
         'Authorization': 'Bearer '+token, 
         'Content-Type': 'application/json'
@@ -29,7 +29,7 @@ export const createTweet= async( token:string, tweet:{
     axios(config)
     .then(function (response: { data: any; }) {
       console.log(JSON.stringify(response.data));
-     window.location.assign("/home");
+     window.location.assign(location);
     })
     .catch(function (error: any) {
       console.log(error);
@@ -45,18 +45,16 @@ export const updateTweet= async( token:string, tweet:{
     isreacted:boolean,
     count:number,
     displayReplies:boolean,
-    replies:any,
     retweets:number,
-    id:string,
-    tweetId:''
+    tweet_id:string
 
-})=>{
+},url:string)=>{
   var axios = require('axios');
   var data = JSON.stringify(tweet);
-  
+  console.log("Asked to update.....")
   var config = {
     method: 'put',
-    url: 'http://127.0.0.1:8000/api/tweets/63598fb984ddb25ee1817ef2',
+    url: url,
     headers: { 
       'Authorization': 'Bearer '+token, 
       'Content-Type': 'application/json'
@@ -96,3 +94,4 @@ export const getTweets=async(token:string)=>{
     });
    
 }
+

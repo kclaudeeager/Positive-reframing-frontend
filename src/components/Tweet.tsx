@@ -8,6 +8,12 @@ import { chatbubbleOutline, heartOutline, heart, repeatOutline, exitOutline, col
 import RepliesCard from '../components/RepliesCard';
 import TweetWithReplies from './TweetWithReplies';
 import { useHistory } from 'react-router';
+import {SocialSharing} from '@awesome-cordova-plugins/social-sharing'
+import { platform } from 'os';
+import { isPlatform } from '@ionic/react';
+import { Browser } from '@capacitor/browser';
+import { RWebShare } from "react-web-share";
+
 const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ; 
     tweet:{
         mentions:Array<string>,
@@ -21,8 +27,10 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
         displayReplies:boolean,
         replies:any,
         retweets:number,
-        id:string,
-        tweetId:''
+        _id:string,
+        tweet_id:string,
+        url:string,
+    
     
     }
     changeTweet:(id:string,action:string)=>void
@@ -43,14 +51,46 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
      
      
   }
+  async function doShare(){
+  return (
+    <div>
+      <h1>Web Share - GeeksforGeeks</h1>
+      <RWebShare
+        data={{
+          text: props.tweet.message,
+          url: window.location.origin+'/home/'+props.tweet._id,
+          title: 'Share via..',
+        }}
+        onClick={() => console.log("shared successfully!")}
+      >
+        <button>Share on Web</button>
+      </RWebShare>
+    </div>
+  );
+};
+//   SocialSharing.canShareViaEmail().then(canShare=>{
+//         console.log("it can share via email")
+//     }).catch(error=>console.log(error))
+//    await SocialSharing.shareWithOptions({
+//     message:props.tweet.message,
+//     subject:'share tweet',
+//     files:props.tweet.attachements,
+//     url:window.location.origin+'/home/'+props.tweet._id,
+//     chooserTitle:'Share via..'
+//    })
+//await Browser.open({ url: 'http://capacitorjs.com/' });
+  // SocialSharing.shareViaTwitter(props.tweet.message, '', window.location.origin+'/home/'+props.tweet._id)
+
+
 
       const assignReaction = () => {
-              props.changeTweet(props.tweet.id,"assignReaction")
+    
+              props.changeTweet(props.tweet._id,"assignReaction")
               
           }
          
       const addReplies = () => {
-             props.changeTweet(props.tweet.id,"addReplies")
+             props.changeTweet(props.tweet._id,"addReplies")
       }
    const getMessege=(messege:string)=>{
     var pragraph="<p>"
@@ -83,9 +123,9 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     }
    }
    function goToReplies(){
-//     //history.push("/home/"+props.tweet.id)
-//  window.open("/home/"+props.tweet.id)
- window.location.assign("/home/"+props.tweet.id);
+//     //history.push("/home/"+props.tweet._id)
+//  window.open("/home/"+props.tweet._id)
+ window.location.assign("/home/"+props.tweet._id);
 
 }
    
@@ -95,10 +135,10 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
         <IonCard>   
         <IonItem>
             <IonAvatar className='ion-margin-end'>
-                <img src={props.tweet.tweep.tweepPhoto} alt="" />
+               {props.tweet.tweep ? (<img src={props.tweet.tweep.tweepPhoto} alt="" />):null}
             </IonAvatar>
             <IonLabel>
-                <h3 style={{ display: "inline" }} >{props.tweet.tweep.tweepName}</h3>  <p style={{ display: "inline" }} className='ion-margin-horizontal'>{props.tweet.timeLeft}</p>
+                <h3 style={{ display: "inline" }} > {props.tweet.tweep ? props.tweet.tweep.tweepName:"NO name"}</h3>  <p style={{ display: "inline" }} className='ion-margin-horizontal'>{props.tweet.timeLeft}</p>
             </IonLabel>
         </IonItem>
         <IonCardContent className=' w-60 container lg:px-30 px-4 py-8 mx-auto items-center' onClick={()=>goToReplies()}>
@@ -109,7 +149,19 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
             <IonCol><button style={{ all: "unset" }} onClick={addReplies}><IonIcon id='clickableIcon' icon={chatbubbleOutline}></IonIcon>{props.tweet.replies.length}</button></IonCol>
             <IonCol><button style={{ all: "unset" }} onClick={assignReaction}><IonIcon color={props.tweet.isreacted ? 'danger' : ''} icon={props.tweet.isreacted ? heart : heartOutline}></IonIcon>{props.tweet.count}</button></IonCol>
             <IonCol><button style={{ all: "unset" }} onClick={() => console.log("retweet")}><IonIcon icon={repeatOutline}></IonIcon></button>{props.tweet.retweets}</IonCol>
-            <IonCol><button style={{ all: "unset" }} onClick={() => console.log("archive")}><IonIcon id='rotate_icon' icon={exitOutline}></IonIcon></button></IonCol>
+            <IonCol>
+            <RWebShare
+        data={{
+          text: props.tweet.message,
+          url: window.location.origin+'/home/'+props.tweet._id,
+          title: 'Share via..',
+        }}
+        onClick={() => console.log("shared successfully!")}
+      >
+        <button style={{ all: "unset" }}><IonIcon id='rotate_icon' icon={exitOutline}></IonIcon></button>
+      </RWebShare>
+ 
+             </IonCol>
             {props.tweet.displayReplies && <RepliesCard tweet={props.tweet} addReplies={addReplies} />}
         </IonRow>
         </IonCard>
@@ -118,5 +170,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
 
 }
 export default TweetItem;
+
+
 
 

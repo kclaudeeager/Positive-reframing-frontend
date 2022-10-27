@@ -13,12 +13,15 @@ const TweetCard: React.FC<{
     addChanges:()=>void
 }> = props => {
     const token:string=localStorage.getItem("token")||""
+    const[url,setUrl]= useState<string>('http://127.0.0.1:8000/api/')
    const changeTweet=(id:string,action:string)=>{
-  var tweets= props.tweetList
+  const tweets= props.tweetList
   tweets.map((item:any)=>{
-
-        if(item.id==id){
+        if(item._id==id){
+        
+            setUrl('http://127.0.0.1:8000/api/'+item.url+id)
         if(action=="assignReaction"){
+            console.log("I am called.....")
                 if (item.isreacted == false) {
                     item.isreacted=true
                     item.count=item.count+1
@@ -29,13 +32,12 @@ const TweetCard: React.FC<{
                     item.count= item.count -1
                   
                 }
-            
         }
         if(action=="addReplies"){
           item.displayReplies=!item.displayReplies
         }
-       
-        updateTweet(token,item)
+        
+        updateTweet(token,item,'http://127.0.0.1:8000/api/'+item.url+id)
     }
     // props.setTweetList(tweets)
     
@@ -49,7 +51,7 @@ const TweetCard: React.FC<{
     <div className=' grid grid-cols-1 md:grid-cols-3 '>
         {props.tweetList.map((item:any)=>{
             
-            return <IonRow  key={`${item.id}`} className="mx-auto"><TweetItem tweet={item} onCalculate={function (): void {
+            return <IonRow  key={`${item._id}`} className="mx-auto"><TweetItem tweet={item} onCalculate={function (): void {
                 throw new Error('Function not implemented.');
             } } onReset={function (): void {
                 throw new Error('Function not implemented.');
