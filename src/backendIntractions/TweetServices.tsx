@@ -11,10 +11,14 @@ export const createTweet= async( token:string, tweet:{
     displayReplies:boolean,
     replies:any,
     retweets:number,
-    tweet_id:string
+    tweet_id:string,
+    shareNumber:number,
+    updated_at:string,
+    created_at:string
 
 },url:string,location:string)=>{
   console.log("Started with ",tweet)
+  
     const data = JSON.stringify(tweet);
     const config = {
       method: 'post',
@@ -38,7 +42,6 @@ export const createTweet= async( token:string, tweet:{
 export const updateTweet= async( token:string, tweet:{
     mentions:Array<string>,
     message:string,
-    images:any, 
     hashtags:Array<string>,
     tweep:{tweepName:string,tweepPhoto:string;},
     timeLeft:string;
@@ -46,10 +49,16 @@ export const updateTweet= async( token:string, tweet:{
     count:number,
     displayReplies:boolean,
     retweets:number,
-    tweet_id:string
+    tweet_id:string,
+    shareNumber:number,
+    updated_at:string,
+    created_at:string
 
 },url:string)=>{
-  var axios = require('axios');
+  let date=new Date()
+  const utcDate = date.toUTCString();
+  tweet.updated_at=utcDate
+  const axios = require('axios');
   var data = JSON.stringify(tweet);
   console.log("Asked to update.....")
   var config = {

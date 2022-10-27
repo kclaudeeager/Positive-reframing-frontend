@@ -19,6 +19,9 @@ const RepliesCard: React.FC<{tweet:{
     retweets:number,
     _id:string,
     tweet_id:string
+    shareNumber:number,
+    updated_at:string,
+    created_at:string
    
 }
 addReplies:()=>void
@@ -62,6 +65,9 @@ addReplies:()=>void
         displayReplies:false,
         replies:[],
         retweets:0,
+        shareNumber:0,
+        updated_at:'',
+        created_at:''
        
       };
     if(reply?.length){
