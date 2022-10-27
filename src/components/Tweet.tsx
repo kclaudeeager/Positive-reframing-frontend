@@ -68,9 +68,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
         setToken(token)
         const createdDate=props.tweet.created_at
         const d2 = new Date().toUTCString();
-        for (let i = 0; i < 10000000000000; i++) {
-            counter.current += 1;
-            setTimeout(()=>{
+     
         const diffDays=getTimeRemaining(d2,createdDate)
       
        console.log(diffDays)
@@ -99,11 +97,9 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
             }
             
         }
-    },i * 1000);
-    
-}
+
       
-    },[])
+    },[timeLeft])
   const returnImages=(images:any)=>{
    
         return images.map((image:any,i:number)=>{return(
