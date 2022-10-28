@@ -8,7 +8,6 @@ export const createTweet= async( token:string, tweet:{
     timeLeft:string;
     isreacted:boolean,
     count:number,
-    displayReplies:boolean,
     replies:any,
     retweets:number,
     tweet_id:string,

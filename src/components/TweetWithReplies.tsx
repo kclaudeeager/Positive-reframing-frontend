@@ -1,14 +1,13 @@
-import { IonBackButton, IonCol, IonContent, IonIcon, IonImg, IonItem, IonPage, IonRow } from "@ionic/react";
+import { IonAvatar, IonBackButton, IonButton, IonButtons, IonCol, IonContent, IonHeader, IonIcon, IonImg, IonItem, IonNav, IonPage, IonRow, IonTitle, IonToolbar } from "@ionic/react";
 import axios from "axios";
+import { arrowBack, arrowBackCircle, logoTwitter } from "ionicons/icons";
 import { FormEventHandler, useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { updateTweet } from "../backendIntractions/TweetServices";
 import RepliesCard from "./RepliesCard";
 import TweetItem from "./Tweet";
 
-
 const   TweetWithReplies:React.FC<{
- 
 }> = props  => {
    const [tweet,setTweet]=useState<any>()
     const [tweetList,setTweetList]=useState<Array<Object>>([])
@@ -16,6 +15,9 @@ const   TweetWithReplies:React.FC<{
     const [isHide, setIsHide] = useState(true);
     const [token,setToken]=useState<any>()
     const[url,setUrl]= useState<string>('http://127.0.0.1:8000/api/')
+    const [previousHref,setPreviousHref]=useState<string>('/')
+    const  Router = require("react-router");
+    let history = useHistory();
     // setTimeout(() => setIsHide(false), 1000);
     const addChanges=()=>{
         getTweets(token)
@@ -212,6 +214,7 @@ const getTweets=async(token:string)=>{
         //  tweet['url']="tweets/"
         tweet['replies'].forEach((reply:any)=>{
             reply['url']='replies/'
+          
             reply['tweep']= {tweepName:"Bonnie",
             tweepPhoto:"https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" } 
         })
@@ -232,6 +235,8 @@ useEffect(()=>{
     const token:string=localStorage.getItem("token")||""
      setToken(token)
      getTweets(token)
+     const prevhref:string=localStorage.getItem("prevhref")||""
+     setPreviousHref(prevhref)
     // const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
     // renderTweets(listTOtest);
     console.log("tweet found",tweet)
@@ -239,7 +244,29 @@ useEffect(()=>{
 
     return(
         <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonButtons slot='start'>
+          <IonButton onClick={()=>{
+        history.goBack()
+          }}>
+          <IonIcon color='primary' icon={arrowBack}></IonIcon>
+          </IonButton>
+          </IonButtons>
+          <IonButtons slot='end'>
+          <IonButton>
+              <IonIcon color='primary' icon={logoTwitter}></IonIcon>
+            </IonButton>
+          
+          </IonButtons>
+        
+          
+          
+          <IonTitle color='primary'>Thread</IonTitle>
+        </IonToolbar>
+      </IonHeader>
         <IonContent>
+        
         <div className="border border-b-gray">
           {!isHide ? getTweetCard(): null}
         {/* <TweetCard tweetList={tweetList} setTweetList={setTweetList} addChanges={addChanges}/> */}

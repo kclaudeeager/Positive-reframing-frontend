@@ -14,6 +14,7 @@ import { isPlatform } from '@ionic/react';
 import { Browser } from '@capacitor/browser';
 import { RWebShare } from "react-web-share";
 import Moment from 'react-moment';
+import { Capacitor } from '@capacitor/core';
 
 const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ; 
     tweet:{
@@ -46,14 +47,13 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     const [message,setMessage]=useState<string>()
     const [timeLeft,setLeftTime]=useState<string>()
     const counter = React.useRef(0);
-   
+   const [displayReplies,setDisplay]=useState<boolean>(false)
       function getTimeRemaining(a:any, b:any){
         const total = Date.parse(a) - Date.parse(b);
         const seconds = Math.floor( (total/1000) % 60 );
         const minutes = Math.floor( (total/1000/60) % 60 );
-        const hours = Math.floor( (total/(1000*60*60)) % 24 )-2;
+        const hours = Math.floor( (total/(1000*60*60)) % 24 );
         const days = Math.floor( total/(1000*60*60*24) );
-      
         return {
           total,
           days,
@@ -64,6 +64,8 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
       }
      
     useEffect(()=>{
+  
+     
         const token:string=localStorage.getItem("token")||""
         setToken(token)
         const createdDate=props.tweet.created_at
@@ -97,7 +99,6 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
             }
             
         }
-
       
     },[timeLeft])
   const returnImages=(images:any)=>{
@@ -123,7 +124,6 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     timeLeft:string;
     isreacted:boolean,
     count:number,
-    displayReplies:boolean,
     retweets:number,
     tweet_id:string,
     shareNumber:number,
@@ -158,14 +158,9 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     setOpen(!isOpen)
     setMessage("Error: "+error)
   });
-  
 
 } 
   async function doShare(){
-  
-  SocialSharing.canShareViaEmail().then(canShare=>{
-        console.log("it can share via email")
-    }).catch(error=>console.log(error))
    await SocialSharing.shareWithOptions({
     message:props.tweet.message,
     subject:'share tweet',
@@ -177,6 +172,46 @@ await Browser.open({ url: 'http://capacitorjs.com/' });
   SocialSharing.shareViaTwitter(props.tweet.message, '', window.location.origin+'/home/'+props.tweet._id)
 
   }
+
+  const share=()=>{
+    let valueToreturn=<></>
+    
+    if(Capacitor.isNativePlatform()|| isPlatform('cordova')){
+       valueToreturn=(<button onClick={()=>{doShare().then(()=>{
+        props.tweet.shareNumber+=1
+        updateTweet(token,props.tweet,'http://127.0.0.1:8000/api/'+props.tweet.url+props.tweet._id)
+       })
+      
+      }} style={{ all: "unset" }}><IonIcon id='rotate_icon' icon={exitOutline}></IonIcon>{props.tweet.shareNumber}</button>)
+    }
+    else{
+      valueToreturn= (<RWebShare
+        data={{
+          text: props.tweet.message,
+          url: window.location.origin+'/home/'+props.tweet._id,
+          title: 'Share via..',
+        }}
+        onClick={() => {
+          
+            props.tweet.shareNumber+=1
+            updateTweet(token,props.tweet,'http://127.0.0.1:8000/api/'+props.tweet.url+props.tweet._id)
+        
+        }}
+      >
+        <button style={{ all: "unset" }}><IonIcon id='rotate_icon' icon={exitOutline}></IonIcon>{props.tweet.shareNumber}</button>
+      </RWebShare>
+      )
+    }
+  return(
+ 
+   valueToreturn
+  )
+
+
+    
+
+ 
+}
 
       const assignReaction = () => {
     
@@ -223,6 +258,8 @@ await Browser.open({ url: 'http://capacitorjs.com/' });
  window.location.assign("/home/"+props.tweet._id);
 
 }
+
+     
    
     return(
         <>
@@ -241,27 +278,13 @@ await Browser.open({ url: 'http://capacitorjs.com/' });
            { getImagesDiv(props.tweet.attachements)}
         </IonCardContent>
         <IonRow className='ion-justify-content-space-evenly ion-margin-horizontal'>
-            <IonCol><button style={{ all: "unset" }} onClick={addReplies}><IonIcon id='clickableIcon' icon={chatbubbleOutline}></IonIcon>{props.tweet.replies.length}</button></IonCol>
+            <IonCol><button style={{ all: "unset" }} onClick={()=>setDisplay(!displayReplies)}><IonIcon id='clickableIcon' icon={chatbubbleOutline}></IonIcon>{props.tweet.replies.length}</button></IonCol>
             <IonCol><button style={{ all: "unset" }} onClick={assignReaction}><IonIcon color={props.tweet.isreacted ? 'danger' : ''} icon={props.tweet.isreacted ? heart : heartOutline}></IonIcon>{props.tweet.count}</button></IonCol>
             <IonCol><button style={{ all: "unset" }} onClick={() => console.log("retweet")}><IonIcon icon={repeatOutline}></IonIcon></button>{props.tweet.retweets}</IonCol>
             <IonCol>
-            <RWebShare
-        data={{
-          text: props.tweet.message,
-          url: window.location.origin+'/home/'+props.tweet._id,
-          title: 'Share via..',
-        }}
-        onClick={() => {
-            props.tweet.shareNumber+=1
-            updateTweet(token,props.tweet,'http://127.0.0.1:8000/api/'+props.tweet.url+props.tweet._id)
-        
-        }}
-      >
-        <button style={{ all: "unset" }}><IonIcon id='rotate_icon' icon={exitOutline}></IonIcon>{props.tweet.shareNumber}</button>
-      </RWebShare>
- 
+             {share()}
              </IonCol>
-            {props.tweet.displayReplies && <RepliesCard tweet={props.tweet} addReplies={addReplies} />}
+            {displayReplies && <RepliesCard tweet={props.tweet} addReplies={addReplies} />}
         </IonRow>
         <IonRow>
           <IonCol>
@@ -281,6 +304,7 @@ await Browser.open({ url: 'http://capacitorjs.com/' });
 
 }
 export default TweetItem;
+
 
 
 

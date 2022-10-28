@@ -1,3 +1,6 @@
 ion-lable { 
     font-size:xx-small;
 }
+ion-back-button {
+    display: block;
+ }

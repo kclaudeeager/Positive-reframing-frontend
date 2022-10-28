@@ -251,7 +251,7 @@ const NewPost = () => {
           <IonRow>
           <IonCol>
           <Link
-            to="/"
+            to="/home"
             className=""
           >
             <IonLabel>

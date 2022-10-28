@@ -1,6 +1,6 @@
-import { IonAvatar, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAvatar, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
-import { logoTwitter } from 'ionicons/icons'
+import { arrowBack, logoTwitter } from 'ionicons/icons'
 
 import './Home.css';
 import TweetCard from '../components/TweetCard';
@@ -33,6 +33,7 @@ const getTweets=async(token:string)=>{
       tweet['tweep']={tweepName:"Bonnie",
       tweepPhoto:"https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" } 
       tweet['url']="tweets/"
+
     });
 
     setTweetList(tweets)
@@ -50,10 +51,13 @@ const getTweets=async(token:string)=>{
   //setTweetList(listTOtest)
  
  //localStorage.removeItem("tweets")
+ const currentHref=window.location.pathname
+ localStorage.setItem('prevhref',currentHref)
  const token:string=localStorage.getItem("token")||""
  setToken(token)
   console.log(token)
   getTweets(token)
+  console.log(currentHref)
 },[])
   return (
     
@@ -61,7 +65,7 @@ const getTweets=async(token:string)=>{
   
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
+          <IonButtons slot='start'>
             <IonAvatar>
               <img src="https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="" />
             </IonAvatar>

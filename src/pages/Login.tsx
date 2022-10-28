@@ -57,8 +57,9 @@ axios(config)
   history.push("/home/");
 })
 .catch(error=>{
-  setMessage("Auth failure! Please create an account");
   console.log(error)
+  setMessage("Auth failure! Please create an account");
+  //Auth failure! Please create an account
   setIserror(true)
 })
   };
