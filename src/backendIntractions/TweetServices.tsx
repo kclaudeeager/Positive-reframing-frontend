@@ -102,4 +102,29 @@ export const getTweets=async(token:string)=>{
     });
    
 }
+export  const fetchTweep=async(tweet:any,token:string)=>{
+  const id=tweet.user;
+  //console.log("id>>>>",id)
+  const config = {
+    method: 'get',
+    url: 'http://127.0.0.1:8000/api/users/'+id,
+    headers: { 
+      'Authorization': 'Bearer '+token
+    }
+  };
+  axios(config)
+  .then( async (response:any)=> {
+    response=response.data
+    const user=response.user;
+    tweet['tweep']= {
+      tweepName:user.username,
+      tweepPhoto:user.profile_image||"https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+      email:user.email
+    }
 
+  })
+  .catch(function (error: any) {
+    console.log(error);
+  });
+ 
+}

@@ -3,7 +3,7 @@ import axios from "axios";
 import { arrowBack, arrowBackCircle, logoTwitter } from "ionicons/icons";
 import { FormEventHandler, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
-import { updateTweet } from "../backendIntractions/TweetServices";
+import { fetchTweep, updateTweet } from "../backendIntractions/TweetServices";
 import RepliesCard from "./RepliesCard";
 import TweetItem from "./Tweet";
 import { parseJwt } from "../decodeToken";
@@ -50,6 +50,10 @@ const   TweetWithReplies:React.FC<{
         setTweet(tweet);
         addChanges();
     }
+    const fetchusers=()=>{
+
+    }
+
 const changeTweetReplies=(id:string,action:string)=>{
     tweetRepliesList.map((item:any)=>{
         console.log("Tweet id ",id)
@@ -207,18 +211,14 @@ const getTweets=async(token:string)=>{
      const tweets:Array<any>= await response.data.tweets 
       console.log(tweets)
       tweets.forEach(tweet => {
- 
-        tweet['tweep']={tweepName:"Bonnie",
-        tweepPhoto:"https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" } 
+        fetchTweep(tweet,token)
         tweet['url']="tweets/"
         if(tweet['replies']){
          console.log("replies>> ",tweet['replies'])
         //  tweet['url']="tweets/"
         tweet['replies'].forEach((reply:any)=>{
             reply['url']='replies/'
-          
-            reply['tweep']= {tweepName:"Bonnie",
-            tweepPhoto:"https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" } 
+            fetchTweep(reply,token)
         })
        
         }

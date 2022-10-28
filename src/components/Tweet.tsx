@@ -269,7 +269,7 @@ await Browser.open({ url: 'http://capacitorjs.com/' });
                {props.tweet.tweep ? (<img src={props.tweet.tweep.tweepPhoto} alt="" />):null}
             </IonAvatar>
             <IonLabel>
-                <h3 style={{ display: "inline" }} > {props.tweet.tweep ? props.tweet.tweep.tweepName:"NO name"}</h3>  <p style={{ display: "inline" }} className='ion-margin-horizontal'>{timeLeft}</p>
+                <h3 style={{ display: "inline" }} > {props.tweet.tweep ? props.tweet.tweep.tweepName:""}</h3>  <p style={{ display: "inline" }} className='ion-margin-horizontal'>{timeLeft}</p>
             </IonLabel>
         </IonItem>
         <IonCardContent className=' w-60 container lg:px-30 px-4 py-8 mx-auto items-center' onClick={()=>goToReplies()}>
