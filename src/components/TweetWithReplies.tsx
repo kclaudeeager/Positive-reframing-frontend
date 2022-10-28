@@ -6,6 +6,7 @@ import { useHistory, useParams } from "react-router";
 import { updateTweet } from "../backendIntractions/TweetServices";
 import RepliesCard from "./RepliesCard";
 import TweetItem from "./Tweet";
+import { parseJwt } from "../decodeToken";
 
 const   TweetWithReplies:React.FC<{
 }> = props  => {
@@ -18,6 +19,7 @@ const   TweetWithReplies:React.FC<{
     const [previousHref,setPreviousHref]=useState<string>('/')
     const  Router = require("react-router");
     let history = useHistory();
+    const [profile_image,setProfileImage]=useState<any>()
     // setTimeout(() => setIsHide(false), 1000);
     const addChanges=()=>{
         getTweets(token)
@@ -233,6 +235,8 @@ const getTweets=async(token:string)=>{
 useEffect(()=>{
     console.log("Id found:: ",tweetId)
     const token:string=localStorage.getItem("token")||""
+    let userObject:any=parseJwt(token)
+    setProfileImage(userObject.profile_image)
      setToken(token)
      getTweets(token)
      const prevhref:string=localStorage.getItem("prevhref")||""
@@ -260,9 +264,7 @@ useEffect(()=>{
           
           </IonButtons>
         
-          
-          
-          <IonTitle color='primary'>Thread</IonTitle>
+          <IonTitle color='primary'>Tweet</IonTitle>
         </IonToolbar>
       </IonHeader>
         <IonContent>

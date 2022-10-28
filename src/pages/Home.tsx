@@ -7,15 +7,17 @@ import TweetCard from '../components/TweetCard';
 import { useEffect, useState } from 'react';
 import React from 'react';
 import axios from 'axios';
+import { parseJwt } from "../decodeToken";
 
 const Home: React.FC = () => {
 const [tweetList,setTweetList]=useState<any>([])
 const [token,setToken]=useState<any>()
-
+const [profile_image,setProfileImage]=useState<any>()
 const addChanges=()=>{
   getTweets(token)
 }
 const getTweets=async(token:string)=>{
+
 
   const config = {
     method: 'get',
@@ -28,7 +30,8 @@ const getTweets=async(token:string)=>{
   axios(config)
   .then( async (response: { data: any; })=> {
    const tweets:Array<any>= await response.data.tweets 
-    console.log(tweets)
+    //console.log(tweets)
+   
     tweets.forEach(tweet => {
       tweet['tweep']={tweepName:"Bonnie",
       tweepPhoto:"https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" } 
@@ -54,6 +57,8 @@ const getTweets=async(token:string)=>{
  const currentHref=window.location.pathname
  localStorage.setItem('prevhref',currentHref)
  const token:string=localStorage.getItem("token")||""
+ let userObject:any=parseJwt(token)
+ setProfileImage(userObject.profile_image)
  setToken(token)
   console.log(token)
   getTweets(token)
@@ -67,7 +72,7 @@ const getTweets=async(token:string)=>{
         <IonToolbar>
           <IonButtons slot='start'>
             <IonAvatar>
-              <img src="https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="" />
+              <img src={profile_image|| "https://images.unsplash.com/photo-1611432579699-484f7990b127?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"} alt="" />
             </IonAvatar>
           </IonButtons>
           <IonButtons slot="end">
