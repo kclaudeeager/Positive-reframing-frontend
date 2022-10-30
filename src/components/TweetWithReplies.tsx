@@ -22,7 +22,7 @@ const   TweetWithReplies:React.FC<{
     const [profile_image,setProfileImage]=useState<any>()
     // setTimeout(() => setIsHide(false), 1000);
     const addChanges=()=>{
-        getTweets(token)
+       getSingleTweet(token,tweetId)
       }
     const changeTweet=(id:string,action:string)=>{
        
@@ -128,9 +128,8 @@ const getTweetCard=()=>{
 
   const {tweetId}=useParams<any>();
      console.log("Id found ",tweetId)
- const renderTweets=(tweets:any)=>{
-    console.log("sent tweets: ",tweets)
-    tweets.map((tweet:any)=>{
+ const renderTweets=(tweet:any)=>{
+
         console.log(" found tweet id: ",tweet._id)
         console.log("sent one: ",tweetId)
         console.log(tweet)
@@ -163,54 +162,22 @@ const getTweetCard=()=>{
             if( tweet.replies.length==0){
                 return
             }
-
-            tweet.replies.forEach((reply:any) => {
-                if(reply._id==tweetId){
-                    setTweet(reply)
-                    setTweetList((prev)=>{
-                        let isFound=false;
-                        prev.forEach((prev:any)=>{
-                        if(prev._id==reply._id){
-                            isFound=true;
-                        }
-                        })
-                        if(!isFound){
-                            return [...prev, reply];
-                        }
-                        return [...prev]
-                        
-                    }
-                        )
-                        setTweetRepliesList(reply.replies)
-                }
-                else{
-                    renderTweets(reply.replies)
-                }
-          
-            });
         }
-
-        
-    })
     setIsHide(false)
  }
+
  
-
-const getTweets=async(token:string)=>{
-
+const getSingleTweet=(token:string,tweetId:string)=>{
     const config = {
-      method: 'get',
-      url: 'http://127.0.0.1:8000/api/tweets/',
-      headers: { 
-        'Authorization': 'Bearer '+token
-      }
-    };
-    
-    axios(config)
-    .then( async (response: { data: any; })=> {
-     const tweets:Array<any>= await response.data.tweets 
-      console.log(tweets)
-      tweets.forEach(tweet => {
+        method: 'get',
+        url: 'http://127.0.0.1:8000/api/tweets/'+tweetId,
+        headers: { 
+          'Authorization': 'Bearer '+token
+        }
+      };
+      axios(config)
+      .then((response:any)=>{
+        const tweet:any=response.data
         fetchTweep(tweet,token)
         tweet['url']="tweets/"
         if(tweet['replies']){
@@ -220,25 +187,58 @@ const getTweets=async(token:string)=>{
             reply['url']='replies/'
             fetchTweep(reply,token)
         })
+    }
+    renderTweets(tweet)
+   // setTweetList(tweet)
        
-        }
-      });
-    
-      renderTweets(tweets);
+      }).catch(error=>{
+        console.log("error>>>",error)
+        window.location.assign("/home")
     })
-    .catch(function (error: any) {
-      console.log(error);
-      window.location.assign("/")
-    });
+}
+// const getTweets=async(token:string)=>{
+
+//     const config = {
+//       method: 'get',
+//       url: 'http://127.0.0.1:8000/api/tweets/',
+//       headers: { 
+//         'Authorization': 'Bearer '+token
+//       }
+//     };
+    
+//     axios(config)
+//     .then( async (response: { data: any; })=> {
+//      const tweets:Array<any>= await response.data.tweets 
+//       //console.log(tweets)
+//       tweets.forEach(tweet => {
+//         fetchTweep(tweet,token)
+//         tweet['url']="tweets/"
+//         if(tweet['replies']){
+//          console.log("replies>> ",tweet['replies'])
+//         //  tweet['url']="tweets/"
+//         tweet['replies'].forEach((reply:any)=>{
+//             reply['url']='replies/'
+//             fetchTweep(reply,token)
+//         })
+       
+//         }
+//       });
+    
+//       renderTweets(tweets);
+//     })
+//     .catch(function (error: any) {
+//       console.log(error);
+//       window.location.assign("/")
+//     });
    
-  }
+//   }
 useEffect(()=>{
     console.log("Id found:: ",tweetId)
     const token:string=localStorage.getItem("token")||""
     let userObject:any=parseJwt(token)
     setProfileImage(userObject.profile_image)
      setToken(token)
-     getTweets(token)
+     getSingleTweet(token,tweetId)
      const prevhref:string=localStorage.getItem("prevhref")||""
      setPreviousHref(prevhref)
     // const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
