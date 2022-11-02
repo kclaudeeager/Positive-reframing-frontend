@@ -2,6 +2,9 @@
   "name": "frontendtwitterclone",
   "version": "0.0.1",
   "private": true,
+  "engines": {
+    "node": "18.12.0"
+  },
   "dependencies": {
     "@awesome-cordova-plugins/core": "^6.1.0",
     "@awesome-cordova-plugins/social-sharing": "^6.1.0",
