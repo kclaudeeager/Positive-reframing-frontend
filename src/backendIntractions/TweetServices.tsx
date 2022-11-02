@@ -36,6 +36,9 @@ export const createTweet= async( token:string, tweet:{
     })
     .catch(function (error: any) {
       console.log(error);
+      if(token===""||null){
+        window.location.assign("/home")
+      }
     });
 }
 export const updateTweet= async( token:string, tweet:{

@@ -1,6 +1,5 @@
-import { IonAvatar, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
-import { arrowBack, logoTwitter } from 'ionicons/icons'
+import { IonAvatar, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { logoTwitter } from 'ionicons/icons'
 
 import './Home.css';
 import TweetCard from '../components/TweetCard';
@@ -8,7 +7,6 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import axios from 'axios';
 import { parseJwt } from "../decodeToken";
-import { fetchTweep } from '../backendIntractions/TweetServices';
 
 const Home: React.FC = () => {
 const [tweetList,setTweetList]=useState<any>([])
@@ -17,8 +15,9 @@ const [profile_image,setProfileImage]=useState<any>()
 const addChanges=()=>{
   getTweets(token)
 }
-const fetchTweep=async(tweets:any,token:string)=>{
+const fetchTweep=(tweets:any,token:string)=>{
   tweets.forEach((tweet:any) => {
+    tweet.url="tweets/"
   const id=tweet.user;
   //console.log("id>>>>",id)
   const config = {
@@ -55,10 +54,10 @@ const getTweets=async(token:string)=>{
   };
   
   axios(config)
-  .then( async (response: { data: any; })=> {
-   const tweets:Array<any>= await response.data.tweets 
+  .then((response: { data: any; })=> {
+   const tweets:Array<any>= response.data.tweets 
     //console.log(tweets)
-   
+    
     fetchTweep(tweets,token)
    
   })

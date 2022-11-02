@@ -10,10 +10,9 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { add, addCircle, ellipse, home, homeSharp, square, triangle } from 'ionicons/icons';
+import { addCircle, homeSharp, triangle } from 'ionicons/icons';
 import Login from './pages/Login';
 import Home from './pages/Home';
-import Tab3 from './pages/Tab3';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -32,8 +31,9 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
-import NewPost from './components/NewTweet';
 import TweetWithReplies from './components/TweetWithReplies';
+import NewPost from './components/NewTweet';
+
 
 
 

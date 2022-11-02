@@ -1,13 +1,11 @@
-import { IonRow,IonLabel,IonGrid,IonCol, IonInput, IonItem, IonTextarea, IonContent,IonPage } from "@ionic/react";
+import { IonRow,IonLabel,IonGrid,IonCol, IonContent,IonPage } from "@ionic/react";
 import { useEffect, useState, useRef,useCallback, createContext } from "react";
 import { MentionsInput, Mention } from "react-mentions";
-import { Link, useHistory } from "react-router-dom";
-import parse from 'html-react-parser';
+import { Link } from "react-router-dom";
 import axios from "axios";
 import {createTweet} from '../backendIntractions/TweetServices';
 
 // import { APIservice } from "../services";
-import $ from "jquery"
 export const TweetListContext = createContext();
 
 const NewPost = () => {
@@ -22,18 +20,8 @@ const NewPost = () => {
   const [images,setImages]=useState([])
   const [photos,setPhotos]=useState([])
   const [enabled,setEnabled]=useState(true)
-  const history=useHistory();
   const [token,setToken]=useState()
 
-  const makeId=(length)=>{
-    var result='';
-    var characters='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charatersLength=characters.length
-    for(var i=0;i<length;i++){
-        result+=characters.charAt(Math.random()*charatersLength)
-    }
-    return result
-    }
   // const [addedTweet,setAdded]=useState();
   let tweet={ 
     mentions:[],
@@ -99,7 +87,7 @@ const NewPost = () => {
         setEnabled(true)
         tweet.attachements.push(imageObj);
         console.log("Tweettt ",tweet)
-        if(tweet.images.length==photos.length){
+        if(tweet.attachements.length===photos.length){
           addTweet(tweet);
         }
       })
@@ -169,7 +157,7 @@ const NewPost = () => {
      
     if(newContent.match(/#[a-z0-9_]+/gi)){
      
-      newContent.match(/#[a-z0-9_]+/gi).forEach((hashtag,index)=>{
+      newContent.match(/#[a-z0-9_]+/gi).forEach((hashtag)=>{
         hashtag= hashtag.substring(1)
         hashtagList.push(hashtag)
 
@@ -177,7 +165,7 @@ const NewPost = () => {
        tweet.hashtags=hashtagList;
     }
   if( newContent.match(/@[a-z0-9_]+/gi)){
-   newContent.match(/@[a-z0-9_]+/gi).forEach((mention,index)=>{
+   newContent.match(/@[a-z0-9_]+/gi).forEach((mention)=>{
     mention= mention.substring(1)
     console.log("mention: ",mention)
     mentionList.push(mention)
@@ -202,7 +190,7 @@ const NewPost = () => {
       e.preventDefault();
       setOtherFields();
       console.log("Photos number>>",photos.length)
-      if(photos.length==0){
+      if(photos.length===0){
         addTweet(tweet)
       }
       else{

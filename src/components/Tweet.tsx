@@ -16,6 +16,24 @@ import { RWebShare } from "react-web-share";
 import Moment from 'react-moment';
 import { Capacitor } from '@capacitor/core';
 
+export   const getMessege=(messege:string)=>{
+  var pragraph="<p>"
+  var messegeArray=messege.split(" ");
+  messegeArray.forEach((messege)=>{
+      if(messege.startsWith("#")){
+      pragraph+='<span className="hashtag">'+messege+'</span>'
+      }
+      else if( messege.startsWith("@")){
+          pragraph+='<span className="mention">'+messege+'</span>'
+      }
+      else{
+          pragraph+=" "+messege;
+      }
+  })
+  pragraph+=" </p>"
+  return  parse(pragraph);
+
+ }
 const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ; 
     tweet:{
         mentions:Array<string>,
@@ -221,24 +239,7 @@ await Browser.open({ url: 'http://capacitorjs.com/' });
       const addReplies = () => {
              props.changeTweet(props.tweet._id,"addReplies")
       }
-   const getMessege=(messege:string)=>{
-    var pragraph="<p>"
-    var messegeArray=messege.split(" ");
-    messegeArray.forEach((messege)=>{
-        if(messege.startsWith("#")){
-        pragraph+='<span className="hashtag">'+messege+'</span>'
-        }
-        else if( messege.startsWith("@")){
-            pragraph+='<span className="mention">'+messege+'</span>'
-        }
-        else{
-            pragraph+=" "+messege;
-        }
-    })
-    pragraph+=" </p>"
-    return  parse(pragraph);
-
-   }
+ 
    const getImagesDiv=(images:any)=>{
     if(images.length>0){
         return(

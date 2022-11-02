@@ -269,11 +269,11 @@ useEffect(()=>{
       </IonHeader>
         <IonContent>
         
-        <div className="border border-b-gray">
+        <div className=" mb-2">
           {!isHide ? getTweetCard(): null}
         {/* <TweetCard tweetList={tweetList} setTweetList={setTweetList} addChanges={addChanges}/> */}
         </div>
-       <div  className="border border-b-gray">
+       <div  className="">
         {!isHide ? getTweetReplies(): null}
        </div>
      <div className=" mx-auto w-48 flex justify-self-center" ><RepliesCard tweet={tweet} addReplies={addReplies} /></div> 
