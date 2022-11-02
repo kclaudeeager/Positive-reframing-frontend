@@ -1,19 +1,16 @@
-import { IonRow, IonCol, IonButton, IonIcon, IonCard, IonItem, IonLabel, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonAvatar, IonText, IonList, IonThumbnail, IonImg, IonGrid, IonAlert } from '@ionic/react';
+import { IonRow, IonCol, IonIcon, IonCard, IonItem, IonLabel, IonCardContent, IonAvatar, IonAlert } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import parse from 'html-react-parser';
 import './TweetCard.css';
 import '../../src/theme/variables.css'
 /* Icons */
-import { chatbubbleOutline, heartOutline, heart, repeatOutline, exitOutline, colorFill, image } from 'ionicons/icons';
+import { chatbubbleOutline, heartOutline, heart, repeatOutline, exitOutline } from 'ionicons/icons';
 import RepliesCard from '../components/RepliesCard';
-import TweetWithReplies from './TweetWithReplies';
 import { useHistory } from 'react-router';
 import {SocialSharing} from '@awesome-cordova-plugins/social-sharing'
-import { platform } from 'os';
 import { isPlatform } from '@ionic/react';
 import { Browser } from '@capacitor/browser';
 import { RWebShare } from "react-web-share";
-import Moment from 'react-moment';
 import { Capacitor } from '@capacitor/core';
 
 export   const getMessege=(messege:string)=>{
@@ -185,8 +182,8 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     url:window.location.origin+'/home/'+props.tweet._id,
     chooserTitle:'Share via..'
    })
-await Browser.open({ url: 'http://capacitorjs.com/' });
-  SocialSharing.shareViaTwitter(props.tweet.message, '', window.location.origin+'/home/'+props.tweet._id)
+// await Browser.open({ url: 'http://capacitorjs.com/' });
+//   SocialSharing.shareViaTwitter(props.tweet.message, '', window.location.origin+'/home/'+props.tweet._id)
 
   }
 
