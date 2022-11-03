@@ -33,6 +33,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import TweetWithReplies from './components/TweetWithReplies';
 import NewPost from './components/NewTweet';
+import Signup from './pages/Signup';
 
 
 
@@ -49,6 +50,10 @@ const App: React.FC = () => (
           </Route>
           <Route exact path="/home">
             <Home />
+           
+          </Route>
+          <Route exact path="/signup">
+            <Signup/>
            
           </Route>
           <Route path="/home/:tweetId">

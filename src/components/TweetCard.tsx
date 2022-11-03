@@ -11,6 +11,7 @@ const TweetCard: React.FC<{
     tweetList:Array<Object>
     setTweetList:(tweetList:Array<Object>)=>void
     addChanges:()=>void
+    userObject:any
 }> = props => {
     const token:string=localStorage.getItem("token")||""
     const[url,setUrl]= useState<string>('http://127.0.0.1:8000/api/')
@@ -21,14 +22,14 @@ const TweetCard: React.FC<{
         
             setUrl('http://127.0.0.1:8000/api/'+item.url+id)
         if(action=="assignReaction"){
-            console.log("I am called.....")
-                if (item.isreacted == false) {
-                    item.isreacted=true
+                if (!item.likes.includes(props.userObject.id)) {
+                    item.likes.push(props.userObject.id)
                     item.count=item.count+1
-                    console.log(item.count, item.isreacted)
+                   
                 }
                 else{
-                    item.isreacted=false
+                    const index=item.likes.indexOf(props.userObject.id)
+                    item.likes.splice(index,1)
                     item.count= item.count -1
                   
                 }
@@ -55,7 +56,7 @@ const TweetCard: React.FC<{
                 throw new Error('Function not implemented.');
             } } onReset={function (): void {
                 throw new Error('Function not implemented.');
-            } } changeTweet={changeTweet}/></IonRow>
+            } } changeTweet={changeTweet} userObject={props.userObject} /></IonRow>
         })}
     </ div>
             

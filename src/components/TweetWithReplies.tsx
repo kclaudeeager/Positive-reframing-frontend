@@ -1,4 +1,4 @@
-import { IonAvatar, IonBackButton, IonButton, IonButtons, IonCol, IonContent, IonHeader, IonIcon, IonImg, IonItem, IonNav, IonPage, IonRow, IonTitle, IonToolbar } from "@ionic/react";
+import { IonAvatar, IonBackButton, IonButton, IonButtons, IonCol, IonContent, IonFooter, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonNav, IonPage, IonRow, IonTitle, IonToolbar } from "@ionic/react";
 import axios from "axios";
 import { arrowBack, arrowBackCircle, logoTwitter } from "ionicons/icons";
 import { FormEventHandler, useEffect, useState } from "react";
@@ -7,6 +7,7 @@ import { fetchTweep, updateTweet } from "../backendIntractions/TweetServices";
 import RepliesCard from "./RepliesCard";
 import TweetItem from "./Tweet";
 import { parseJwt } from "../decodeToken";
+import { Wave } from "./Wave";
 
 const   TweetWithReplies:React.FC<{
 }> = props  => {
@@ -18,6 +19,7 @@ const   TweetWithReplies:React.FC<{
     const[url,setUrl]= useState<string>('http://127.0.0.1:8000/api/')
     const [previousHref,setPreviousHref]=useState<string>('/')
     const  Router = require("react-router");
+    const [userObject,setUserObject]=useState<any>()
     let history = useHistory();
     const [profile_image,setProfileImage]=useState<any>()
     // setTimeout(() => setIsHide(false), 1000);
@@ -99,7 +101,7 @@ const getTweetReplies=()=>{
     <div className=' grid grid-cols-1 md:grid-cols-3 '>
     {tweetRepliesList.map((item:any)=>{
  item['url']="replies/"
-return (<IonRow  key={`${item._id}`} className="mx-auto"><TweetItem tweet={item} onCalculate={function (): void {
+return (<IonRow  key={`${item._id}`} className="mx-auto"><TweetItem  userObject={userObject} tweet={item} onCalculate={function (): void {
     throw new Error('Function not implemented.');
 } } onReset={function (): void {
     throw new Error('Function not implemented.');
@@ -118,7 +120,7 @@ const getTweetCard=()=>{
       tweet['url']='tweets/'
   }
     return (
-        <div className=' grid grid-cols-1 md:grid-cols-3 '><IonRow  key={`${tweet._id}`} className="mx-auto"><TweetItem tweet={tweet} onCalculate={function (): void {
+        <div className=' grid grid-cols-1 md:grid-cols-3 '><IonRow  key={`${tweet._id}`} className="mx-auto"><TweetItem userObject={userObject} tweet={tweet} onCalculate={function (): void {
         throw new Error('Function not implemented.');
     } } onReset={function (): void {
         throw new Error('Function not implemented.');
@@ -236,6 +238,7 @@ useEffect(()=>{
     console.log("Id found:: ",tweetId)
     const token:string=localStorage.getItem("token")||""
     let userObject:any=parseJwt(token)
+    setUserObject(userObject)
     setProfileImage(userObject.profile_image)
      setToken(token)
      getSingleTweet(token,tweetId)
@@ -277,8 +280,13 @@ useEffect(()=>{
         {!isHide ? getTweetReplies(): null}
        </div>
      <div className=" mx-auto w-48 flex justify-self-center" ><RepliesCard tweet={tweet} addReplies={addReplies} /></div> 
+    
         </IonContent>
-     
+        <IonFooter>
+				<IonGrid className="ion-no-margin ion-no-padding">
+          </IonGrid>
+          <Wave />
+          </IonFooter>
         </IonPage>
     )
 }

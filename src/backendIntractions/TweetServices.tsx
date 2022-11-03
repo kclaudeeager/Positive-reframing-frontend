@@ -5,8 +5,8 @@ export const createTweet= async( token:string, tweet:{
     message:string,
     attachements:any, 
     hashtags:Array<string>,
-    timeLeft:string;
-    isreacted:boolean,
+    timeLeft:string,
+    likes:Array<any>,
     count:number,
     replies:any,
     retweets:number,
@@ -47,7 +47,7 @@ export const updateTweet= async( token:string, tweet:{
     hashtags:Array<string>,
     tweep:{tweepName:string,tweepPhoto:string;},
     timeLeft:string;
-    isreacted:boolean,
+    likes:Array<any>,
     count:number,
     displayReplies:boolean,
     retweets:number,
@@ -131,3 +131,4 @@ export  const fetchTweep=async(tweet:any,token:string)=>{
   });
  
 }
+ 

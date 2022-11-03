@@ -35,7 +35,7 @@ const RepliesCard: React.FC<{
     attachements: any;
     hashtags: Array<string>;
     timeLeft: string;
-    isreacted: boolean;
+    likes:Array<any>;
     count: number;
     displayReplies: boolean;
     replies: any;
@@ -93,7 +93,7 @@ const axios = require('axios');
       attachements: [],
       hashtags: [],
       timeLeft: "",
-      isreacted: false,
+      likes:[],
       count: 0,
       displayReplies: false,
       replies: [],

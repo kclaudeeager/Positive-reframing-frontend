@@ -30,7 +30,7 @@ const NewPost = () => {
     hashtags:[],
     tweep:{tweepName:'',tweepPhoto:''},
     timeLeft:'',
-    isreacted:false,
+    likes:[],
     count:0,
     displayReplies:false,
     replies:[],

@@ -12,6 +12,7 @@ import { isPlatform } from '@ionic/react';
 import { Browser } from '@capacitor/browser';
 import { RWebShare } from "react-web-share";
 import { Capacitor } from '@capacitor/core';
+import { parseJwt } from '../decodeToken';
 
 export   const getMessege=(messege:string)=>{
   var pragraph="<p>"
@@ -39,7 +40,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
         hashtags:Array<string>,
         tweep:{tweepName:string,tweepPhoto:string;},
         timeLeft:string;
-        isreacted:boolean,
+        likes:Array<any>,
         count:number,
         displayReplies:boolean,
         replies:any,
@@ -54,6 +55,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     
     }
     changeTweet:(id:string,action:string)=>void
+    userObject:any
 }> = props => {
 
     const history=useHistory()
@@ -62,13 +64,18 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     const [message,setMessage]=useState<string>()
     const [timeLeft,setLeftTime]=useState<string>()
     const counter = React.useRef(0);
+  
    const [displayReplies,setDisplay]=useState<boolean>(false)
       function getTimeRemaining(a:any, b:any){
-        const total = Date.parse(a) - Date.parse(b);
-        const seconds = Math.floor( (total/1000) % 60 );
-        const minutes = Math.floor( (total/1000/60) % 60 );
-        const hours = Math.floor( (total/(1000*60*60)) % 24 );
-        const days = Math.floor( total/(1000*60*60*24) );
+        let total = Math.abs(Date.parse(a) - Date.parse(b))/1000;
+        const days = Math.floor( total/(86400) );
+        total-=days*86400;
+        const hours = Math.floor( (total/3600) % 24 )-2;
+        total-=hours*3600;
+        const minutes = Math.floor( (total/60) % 60 );
+        total-=minutes*60;
+        const seconds =  Math.floor(total% 60) ;
+      
         return {
           total,
           days,
@@ -83,12 +90,13 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
      
         const token:string=localStorage.getItem("token")||""
         setToken(token)
+    
         const createdDate=props.tweet.created_at
         const d2 = new Date().toUTCString();
      
         const diffDays=getTimeRemaining(d2,createdDate)
       
-
+        console.log(diffDays)
         if(diffDays.days>0){
        
           setLeftTime((prev)=>""+diffDays.days+" days")
@@ -136,7 +144,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     hashtags:Array<string>,
     tweep:{tweepName:string,tweepPhoto:string;},
     timeLeft:string;
-    isreacted:boolean,
+    likes:Array<any>,
     count:number,
     retweets:number,
     tweet_id:string,
@@ -175,12 +183,20 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
 
 } 
   async function doShare(){
-   await SocialSharing.shareWithOptions({
-    message:props.tweet.message,
-    subject:'share tweet',
-    files:props.tweet.attachements,
-    url:window.location.origin+'/home/'+props.tweet._id,
-    chooserTitle:'Share via..'
+    const options={
+      message:props.tweet.message,
+      subject:'share tweet',
+      url:window.location.origin+'/home/'+props.tweet._id,
+      chooserTitle:'Share via..'
+     }
+   
+   SocialSharing.shareWithOptions(options).then((result)=>{
+    console.log("Sharing completed? "+result.completed)
+    console.log("Shared to app: "+result.app)
+    props.tweet.shareNumber+=1
+    updateTweet(token,props.tweet,'http://127.0.0.1:8000/api/'+props.tweet.url+props.tweet._id)
+   }).catch((error)=>{
+    console.log("Sharing failed with message: "+error)
    })
 // await Browser.open({ url: 'http://capacitorjs.com/' });
 //   SocialSharing.shareViaTwitter(props.tweet.message, '', window.location.origin+'/home/'+props.tweet._id)
@@ -191,12 +207,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     let valueToreturn=<></>
     
     if(Capacitor.isNativePlatform()|| isPlatform('cordova')){
-       valueToreturn=(<button onClick={()=>{doShare().then(()=>{
-        props.tweet.shareNumber+=1
-        updateTweet(token,props.tweet,'http://127.0.0.1:8000/api/'+props.tweet.url+props.tweet._id)
-       })
-      
-      }} style={{ all: "unset" }}><IonIcon id='rotate_icon' icon={exitOutline}></IonIcon>{props.tweet.shareNumber}</button>)
+       valueToreturn=(<button onClick={()=>{doShare()}} style={{ all: "unset" }}><IonIcon id='rotate_icon' icon={exitOutline}></IonIcon>{props.tweet.shareNumber}</button>)
     }
     else{
       valueToreturn= (<RWebShare
@@ -255,9 +266,6 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
  window.location.assign("/home/"+props.tweet._id);
 
 }
-
-     
-   
     return(
         <>
 
@@ -276,7 +284,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
         </IonCardContent>
         <IonRow className='ion-justify-content-space-evenly ion-margin-horizontal'>
             <IonCol><button style={{ all: "unset" }} onClick={()=>setDisplay(!displayReplies)}><IonIcon id='clickableIcon' icon={chatbubbleOutline}></IonIcon>{props.tweet.replies.length}</button></IonCol>
-            <IonCol><button style={{ all: "unset" }} onClick={assignReaction}><IonIcon color={props.tweet.isreacted ? 'danger' : ''} icon={props.tweet.isreacted ? heart : heartOutline}></IonIcon>{props.tweet.count}</button></IonCol>
+            <IonCol><button style={{ all: "unset" }} onClick={assignReaction}><IonIcon color={props.tweet.likes.includes(props.userObject.id) ? 'danger' : ''} icon={props.tweet.likes.includes(props.userObject.id) ? heart : heartOutline}></IonIcon>{props.tweet.likes.length}</button></IonCol>
             <IonCol><button style={{ all: "unset" }} onClick={() => console.log("retweet")}><IonIcon icon={repeatOutline}></IonIcon></button>{props.tweet.retweets}</IonCol>
             <IonCol>
              {share()}

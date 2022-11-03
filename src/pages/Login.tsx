@@ -1,4 +1,4 @@
-import { IonAvatar, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAvatar, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
 import { logoTwitter } from 'ionicons/icons'
 import React, { useState } from 'react';
@@ -8,6 +8,7 @@ import { personCircle } from "ionicons/icons";
 import { useHistory } from "react-router-dom";
 import { IonItem, IonLabel, IonInput, IonAlert } from '@ionic/react';
 import './Login.css';
+import { Wave } from '../components/Wave';
 
 const Login: React.FC = () => {
   const history = useHistory();
@@ -54,7 +55,8 @@ axios(config)
   console.log(JSON.stringify(response.data));
   console.log("Token to save: ",response.data.access_token)
   localStorage.setItem("token",response.data.access_token)
-  history.push("/home/");
+  //history.push("/home/");
+  window.location.assign("/home")
 })
 .catch(error=>{
   console.log(error)
@@ -135,15 +137,20 @@ axios(config)
               </p>
               <IonButton expand="block" onClick={handleLogin}>Login</IonButton>
               <p style={{ fontSize: "medium" }}>
-                  Don't have an account? <a href="#">Sign up!</a>
+                  Don't have an account? <a href="/signup">Sign up!</a>
               </p>
 
             </IonCol>
           </IonRow>
+        
         </IonGrid>
         {/* <ExploreContainer /> */}
       </IonContent>
-
+      <IonFooter>
+				<IonGrid className="ion-no-margin ion-no-padding">
+          </IonGrid>
+          <Wave />
+          </IonFooter>
     </IonPage>
   );
 };

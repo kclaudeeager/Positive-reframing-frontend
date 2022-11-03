@@ -1,4 +1,4 @@
-import { IonAvatar, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAvatar, IonButton, IonButtons, IonContent, IonFooter, IonGrid, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { logoTwitter } from 'ionicons/icons'
 
 import './Home.css';
@@ -7,11 +7,13 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import axios from 'axios';
 import { parseJwt } from "../decodeToken";
+import { Wave } from '../components/Wave';
 
 const Home: React.FC = () => {
 const [tweetList,setTweetList]=useState<any>([])
 const [token,setToken]=useState<any>()
 const [profile_image,setProfileImage]=useState<any>()
+const [userObject,setUserObject]=useState<any>()
 const addChanges=()=>{
   getTweets(token)
 }
@@ -65,7 +67,6 @@ const getTweets=async(token:string)=>{
     console.log(error);
     window.location.assign("/")
   });
- 
 }
 
  useEffect( ()=>{
@@ -73,11 +74,14 @@ const getTweets=async(token:string)=>{
  localStorage.setItem('prevhref',currentHref)
  const token:string=localStorage.getItem("token")||""
  let userObject:any=parseJwt(token)
+ setUserObject(userObject)
+ console.log("userObject >> ",userObject)
  setProfileImage(userObject.profile_image)
  setToken(token)
   console.log(token)
   getTweets(token)
   console.log(currentHref)
+
 },[])
   return (
     
@@ -99,8 +103,14 @@ const getTweets=async(token:string)=>{
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen  className=' relative'>
-        <TweetCard tweetList={tweetList} setTweetList={setTweetList} addChanges={addChanges}/>
+        <TweetCard tweetList={tweetList} setTweetList={setTweetList} addChanges={addChanges} userObject={userObject}/>
+      
       </IonContent>
+      <IonFooter>
+				<IonGrid className="ion-no-margin ion-no-padding">
+          </IonGrid>
+          <Wave />
+          </IonFooter>
     </IonPage>
   );
 };
