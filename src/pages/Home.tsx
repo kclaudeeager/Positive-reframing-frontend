@@ -102,13 +102,12 @@ const getTweets=async(token:string)=>{
           <IonTitle color='primary'>Home</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen  className=' relative'>
+      <IonContent   className=' relative'>
         <TweetCard tweetList={tweetList} setTweetList={setTweetList} addChanges={addChanges} userObject={userObject}/>
-      
       </IonContent>
       <IonFooter>
-				<IonGrid className="ion-no-margin ion-no-padding">
-          </IonGrid>
+				{/* <IonGrid className="ion-no-margin ion-no-padding">
+          </IonGrid> */}
           <Wave />
           </IonFooter>
     </IonPage>

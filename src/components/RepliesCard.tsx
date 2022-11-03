@@ -338,7 +338,8 @@ const axios = require('axios');
         enterAnimation={enterAnimation}
         leaveAnimation={leaveAnimation}
         isOpen={isOpen}
- 
+        backdropDismiss={false}
+        className='absolute mt-14 lg:mt-auto bg-transparent text-justify outline-none  lg:h-auto'
       >
              <IonLoading
                   isOpen={showLoading}

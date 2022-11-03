@@ -22,6 +22,9 @@ const TweetCard: React.FC<{
         
             setUrl('http://127.0.0.1:8000/api/'+item.url+id)
         if(action=="assignReaction"){
+            console.log("Gonna see what's on")
+            console.log(props.userObject.id)
+            console.log(item.likes)
                 if (!item.likes.includes(props.userObject.id)) {
                     item.likes.push(props.userObject.id)
                     item.count=item.count+1
@@ -38,7 +41,7 @@ const TweetCard: React.FC<{
           item.displayReplies=!item.displayReplies
         }
         
-        updateTweet(token,item,'http://127.0.0.1:8000/api/'+item.url+id)
+     updateTweet(token,item,'http://127.0.0.1:8000/api/'+item.url+id)
     }
     // props.setTweetList(tweets)
     

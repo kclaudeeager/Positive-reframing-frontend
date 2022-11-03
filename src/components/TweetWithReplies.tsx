@@ -22,6 +22,7 @@ const   TweetWithReplies:React.FC<{
     const [userObject,setUserObject]=useState<any>()
     let history = useHistory();
     const [profile_image,setProfileImage]=useState<any>()
+    
     // setTimeout(() => setIsHide(false), 1000);
     const addChanges=()=>{
        getSingleTweet(token,tweetId)
@@ -32,17 +33,17 @@ const   TweetWithReplies:React.FC<{
             setUrl('http://127.0.0.1:8000/api/'+tweet.url+id)
             if(action=="assignReaction"){
                 console.log("I am clicked...")
-                    if (tweet.isreacted == false) {
-                        tweet.isreacted=true
-                        tweet.count=tweet.count+1
-                        console.log(tweet.count, tweet.isreacted)
-                    }
-                    else{
-                        tweet.isreacted=false
-                        tweet.count= tweet.count -1
-                      
-                    }
-                
+                if (!tweet.likes.includes(userObject.id)) {
+                    tweet.likes.push(userObject.id)
+                    tweet.count=tweet.count+1
+                   
+                }
+                else{
+                    const index=tweet.likes.indexOf(userObject.id)
+                    tweet.likes.splice(index,1)
+                    tweet.count= tweet.count -1
+                  
+                }
             }
             if(action=="addReplies"){
                 tweet.displayReplies=!tweet.displayReplies
@@ -63,17 +64,18 @@ const changeTweetReplies=(id:string,action:string)=>{
           if(item._id==id){
               setUrl('http://127.0.0.1:8000/api/'+item.url+id)
           if(action=="assignReaction"){
-              console.log("I am called.....")
-                  if (item.isreacted == false) {
-                      item.isreacted=true
-                      item.count=item.count+1
-                      console.log(item.count, item.isreacted)
-                  }
-                  else{
-                      item.isreacted=false
-                      item.count= item.count -1
-                    
-                  }
+             
+            if (!item.likes.includes(userObject.id)) {
+                item.likes.push(userObject.id)
+                item.count=item.count+1
+               
+            }
+            else{
+                const index=item.likes.indexOf(userObject.id)
+                item.likes.splice(index,1)
+                item.count= item.count -1
+              
+            }
           }
           if(action=="addReplies"){
             item.displayReplies=!item.displayReplies
@@ -198,42 +200,7 @@ const getSingleTweet=(token:string,tweetId:string)=>{
         window.location.assign("/home")
     })
 }
-// const getTweets=async(token:string)=>{
 
-//     const config = {
-//       method: 'get',
-//       url: 'http://127.0.0.1:8000/api/tweets/',
-//       headers: { 
-//         'Authorization': 'Bearer '+token
-//       }
-//     };
-    
-//     axios(config)
-//     .then( async (response: { data: any; })=> {
-//      const tweets:Array<any>= await response.data.tweets 
-//       //console.log(tweets)
-//       tweets.forEach(tweet => {
-//         fetchTweep(tweet,token)
-//         tweet['url']="tweets/"
-//         if(tweet['replies']){
-//          console.log("replies>> ",tweet['replies'])
-//         //  tweet['url']="tweets/"
-//         tweet['replies'].forEach((reply:any)=>{
-//             reply['url']='replies/'
-//             fetchTweep(reply,token)
-//         })
-       
-//         }
-//       });
-    
-//       renderTweets(tweets);
-//     })
-//     .catch(function (error: any) {
-//       console.log(error);
-//       window.location.assign("/")
-//     });
-   
-//   }
 useEffect(()=>{
     console.log("Id found:: ",tweetId)
     const token:string=localStorage.getItem("token")||""
@@ -283,8 +250,8 @@ useEffect(()=>{
     
         </IonContent>
         <IonFooter>
-				<IonGrid className="ion-no-margin ion-no-padding">
-          </IonGrid>
+				{/* <IonGrid className="ion-no-margin ion-no-padding">
+          </IonGrid> */}
           <Wave />
           </IonFooter>
         </IonPage>

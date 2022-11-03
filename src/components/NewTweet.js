@@ -256,7 +256,7 @@ const NewPost = () => {
           </IonRow>
           <IonRow>
             <IonCol>
-            <div className="description outline-none">
+            <div className="description outline-none w-60 md:max-lg:flex lg:w-80  text-black sm:text-center">
            
           <MentionsInput
             className="mentions"
@@ -326,7 +326,7 @@ const NewPost = () => {
           >
             #
           </div>
-          <div className="count ml-auto text-gray-400 text-xs font-semibold">
+          <div className="count ml-auto text-gray-400 text-xs font-semibold outline-none w-44 md:max-lg:flex lg:w-80 sm:text-center">
             {350 - content.length}/350
           </div>
        
