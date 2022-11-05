@@ -8,6 +8,7 @@ import RepliesCard from '../components/RepliesCard';
 import TweetItem from './Tweet';
 import { createTweet, updateTweet } from '../backendIntractions/TweetServices';
 import axios from 'axios';
+import { useHistory } from 'react-router';
 const TweetCard: React.FC<{ 
     tweetList:Array<Object>
     setTweetList:(tweetList:Array<Object>)=>void
@@ -15,6 +16,7 @@ const TweetCard: React.FC<{
     userObject:any
 }> = props => {
     const token:string=localStorage.getItem("token")||""
+    const history=useHistory()
     const[url,setUrl]= useState<string>('http://127.0.0.1:8000/api/')
    const changeTweet=(id:string,action:string)=>{
   const tweets= props.tweetList
@@ -44,14 +46,13 @@ const TweetCard: React.FC<{
           updateTweet(token,item,'http://127.0.0.1:8000/api/'+item.url+id)
         }
         if(action==="retweet"){
-           
-
             const tweetToRetweet={...item}
             tweetToRetweet.tweet_id=""
             tweetToRetweet.likes=[]
             tweetToRetweet.shareNumber=0
             tweetToRetweet.replies=[]
             tweetToRetweet.retweets=0
+            tweetToRetweet._id=null
             const data = JSON.stringify(tweetToRetweet);
             const config = {
               method: 'post',
@@ -68,6 +69,8 @@ const TweetCard: React.FC<{
               console.log(JSON.stringify(response.data));
               item.retweets+=1;
               updateTweet(token,item,'http://127.0.0.1:8000/api/'+item.url+id)
+            }).then((done)=>{
+                history.push("/home")
             })
             .catch(function (error: any) {
               console.log(error);

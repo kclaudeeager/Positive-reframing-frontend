@@ -150,7 +150,7 @@ const axios = require('axios');
       console.log(currentLocation);
       setReframedText(newReply.message)
 
-     if(props.tweet.hashtags.includes("stressed")){
+
       const predictUrl='http://127.0.0.1:8000/api/predict-replies?reply='+newReply.message
       console.log("predictUrl::",predictUrl)
       const configPredict = {
@@ -171,7 +171,8 @@ const axios = require('axios');
           "Probability": response.Probability
         };
         console.log(newReply)
-        if( newReply.classification.prediction==="Negative"){
+     
+        if( newReply.classification.prediction==="Negative" && props.tweet.hashtags.includes("stressed")){
           console.log("I have found to be negative")
           setIsOpen(true)
           setShowLoading(true)
@@ -223,29 +224,32 @@ const axios = require('axios');
       .catch(function (error: any) {
         console.log(error);
       });
-    }
-    else{
-      createTweet(
-        token,
-        newReply,
-        "http://127.0.0.1:8000/api/replies/",
-        window.location.href
-      ).then((replies) => {
-        console.log(props.tweet);
-        modal.current?.dismiss();
-        setIsOpen(false);
-        props.addReplies();
-      });
-      props.tweet.replies.push(reframedReply)
     
-      props.tweet.count+=1;
-      console.log("that was positive")
-    }
+ 
    }
   };
   const allow=()=>{
     modal.current?.dismiss();
     setIsOpen(false);
+    const predictUrl='http://127.0.0.1:8000/api/predict-replies?reply='+reframedReply.message
+    console.log("predictUrl::",predictUrl)
+    const configPredict = {
+      method: 'get',
+      url: predictUrl,
+      headers: { 
+        'Content-Type': 'application/json'
+      }
+    };
+    axios(configPredict)
+    .then((response:any)=> 
+      response=response.data
+    
+    ).then((response: any)=>{
+      console.log("prediction response",response)
+      reframedReply.classification= {
+        "prediction": response.prediction,
+        "Probability": response.Probability
+      };
     createTweet(
       token,
       reframedReply,
@@ -260,6 +264,7 @@ const axios = require('axios');
     props.tweet.replies.push(reframedReply)
   
     props.tweet.count+=1;
+  })
   }
   const deny=()=>{
     modal.current?.dismiss();
