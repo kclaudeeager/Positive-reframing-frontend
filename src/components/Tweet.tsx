@@ -6,13 +6,10 @@ import '../../src/theme/variables.css'
 /* Icons */
 import { chatbubbleOutline, heartOutline, heart, repeatOutline, exitOutline } from 'ionicons/icons';
 import RepliesCard from '../components/RepliesCard';
-import { useHistory } from 'react-router';
 import {SocialSharing} from '@awesome-cordova-plugins/social-sharing'
 import { isPlatform } from '@ionic/react';
-import { Browser } from '@capacitor/browser';
 import { RWebShare } from "react-web-share";
 import { Capacitor } from '@capacitor/core';
-import { parseJwt } from '../decodeToken';
 
 export   const getMessege=(messege:string)=>{
   var pragraph="<p>"
@@ -50,20 +47,19 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
         url:string,
         shareNumber:number,
         updated_at:string,
-        created_at:string
+        created_at:string,
+        classification: { prediction: any; Probability: any; };
     
     
     }
     changeTweet:(id:string,action:string)=>void
     userObject:any
 }> = props => {
-
-    const history=useHistory()
     const [isOpen,setOpen]=useState<boolean>(false)
     const [token,setToken]=useState<any>()
     const [message,setMessage]=useState<string>()
     const [timeLeft,setLeftTime]=useState<string>()
-    const counter = React.useRef(0);
+
   
    const [displayReplies,setDisplay]=useState<boolean>(false)
       function getTimeRemaining(a:any, b:any){
@@ -122,7 +118,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
             
         }
       
-    },[timeLeft])
+    },[props.tweet.created_at])
   const returnImages=(images:any)=>{
    
         return images.map((image:any,i:number)=>{return(
@@ -243,6 +239,9 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
               props.changeTweet(props.tweet._id,"assignReaction")
               
           }
+      const retweet=()=>{
+        props.changeTweet(props.tweet._id,"retweet")
+      }
          
       const addReplies = () => {
              props.changeTweet(props.tweet._id,"addReplies")
@@ -285,7 +284,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
         <IonRow className='ion-justify-content-space-evenly ion-margin-horizontal'>
             <IonCol><button style={{ all: "unset" }} onClick={()=>setDisplay(!displayReplies)}><IonIcon id='clickableIcon' icon={chatbubbleOutline}></IonIcon>{props.tweet.replies.length}</button></IonCol>
             <IonCol><button style={{ all: "unset" }} onClick={assignReaction}><IonIcon color={props.tweet.likes.includes(props.userObject.id) ? 'danger' : ''} icon={props.tweet.likes.includes(props.userObject.id) ? heart : heartOutline}></IonIcon>{props.tweet.likes.length}</button></IonCol>
-            <IonCol><button style={{ all: "unset" }} onClick={() => console.log("retweet")}><IonIcon icon={repeatOutline}></IonIcon></button>{props.tweet.retweets}</IonCol>
+            <IonCol><button style={{ all: "unset" }} onClick={retweet}><IonIcon icon={repeatOutline}></IonIcon></button>{props.tweet.retweets}</IonCol>
             <IonCol>
              {share()}
              </IonCol>

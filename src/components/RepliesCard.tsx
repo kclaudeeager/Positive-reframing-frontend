@@ -45,6 +45,7 @@ const RepliesCard: React.FC<{
     shareNumber: number;
     updated_at: string;
     created_at: string;
+    classification: { prediction: any; Probability: any; };
   };
   addReplies: () => void;
 }> = (props) => {
@@ -101,6 +102,7 @@ const axios = require('axios');
       shareNumber: 0,
       updated_at: "",
       created_at: "",
+      classification: { prediction: '', Probability: 0 }
     };
     if (reply?.length) {
       let newContent = reply;
@@ -160,11 +162,16 @@ const axios = require('axios');
       };
       axios(configPredict)
       .then((response:any)=> 
-        response=response.data.prediction
+        response=response.data
       
       ).then((response: any)=>{
-        console.log(response)
-        if(response==="Negative"){
+        console.log("prediction response",response)
+        newReply.classification= {
+          "prediction": response.prediction,
+          "Probability": response.Probability
+        };
+        console.log(newReply)
+        if( newReply.classification.prediction==="Negative"){
           console.log("I have found to be negative")
           setIsOpen(true)
           setShowLoading(true)

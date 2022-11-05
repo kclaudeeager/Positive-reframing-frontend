@@ -31,6 +31,7 @@ const NewPost = () => {
     tweep:{tweepName:'',tweepPhoto:''},
     timeLeft:'',
     likes:[],
+    classification: { predict: '',Probability:0 },
     count:0,
     displayReplies:false,
     replies:[],

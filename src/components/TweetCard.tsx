@@ -6,7 +6,8 @@ import './TweetCard.css';
 import { chatbubbleOutline, heartOutline, heart, repeatOutline, exitOutline, colorFill } from 'ionicons/icons';
 import RepliesCard from '../components/RepliesCard';
 import TweetItem from './Tweet';
-import { updateTweet } from '../backendIntractions/TweetServices';
+import { createTweet, updateTweet } from '../backendIntractions/TweetServices';
+import axios from 'axios';
 const TweetCard: React.FC<{ 
     tweetList:Array<Object>
     setTweetList:(tweetList:Array<Object>)=>void
@@ -36,12 +37,48 @@ const TweetCard: React.FC<{
                     item.count= item.count -1
                   
                 }
+                updateTweet(token,item,'http://127.0.0.1:8000/api/'+item.url+id)
         }
         if(action=="addReplies"){
           item.displayReplies=!item.displayReplies
+          updateTweet(token,item,'http://127.0.0.1:8000/api/'+item.url+id)
+        }
+        if(action==="retweet"){
+           
+
+            const tweetToRetweet={...item}
+            tweetToRetweet.tweet_id=""
+            tweetToRetweet.likes=[]
+            tweetToRetweet.shareNumber=0
+            tweetToRetweet.replies=[]
+            tweetToRetweet.retweets=0
+            const data = JSON.stringify(tweetToRetweet);
+            const config = {
+              method: 'post',
+              url: 'http://127.0.0.1:8000/api/tweets',
+              headers: { 
+                'Authorization': 'Bearer '+token, 
+                'Content-Type': 'application/json'
+              },
+              data : data
+            };
+            
+            axios(config)
+            .then(function (response: { data: any; }) {
+              console.log(JSON.stringify(response.data));
+              item.retweets+=1;
+              updateTweet(token,item,'http://127.0.0.1:8000/api/'+item.url+id)
+            })
+            .catch(function (error: any) {
+              console.log(error);
+              if(token===""||null){
+                window.location.assign("/home")
+              }
+            });
+           
         }
         
-     updateTweet(token,item,'http://127.0.0.1:8000/api/'+item.url+id)
+  
     }
     // props.setTweetList(tweets)
     

@@ -1,6 +1,7 @@
 
 import axios from "axios";
 export const createTweet= async( token:string, tweet:{
+    classification: { prediction: any; Probability: any; };
     mentions:Array<string>,
     message:string,
     attachements:any, 
@@ -17,7 +18,8 @@ export const createTweet= async( token:string, tweet:{
 
 },url:string,location:string)=>{
   console.log("Started with ",tweet)
-  
+    
+
     const data = JSON.stringify(tweet);
     const config = {
       method: 'post',
