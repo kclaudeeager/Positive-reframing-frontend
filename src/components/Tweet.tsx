@@ -29,6 +29,24 @@ export   const getMessege=(messege:string)=>{
   return  parse(pragraph);
 
  }
+ export  function getTimeRemaining(a:any, b:any){
+  let total = Math.abs(Date.parse(a) - Date.parse(b))/1000;
+  const days = Math.floor( total/(86400) );
+  total-=days*86400;
+  const hours = Math.floor( (total/3600) % 24 )-2;
+  total-=hours*3600;
+  const minutes = Math.floor( (total/60) % 60 );
+  total-=minutes*60;
+  const seconds =  Math.floor(total% 60) ;
+
+  return {
+    total,
+    days,
+    hours,
+    minutes,
+    seconds
+  };
+}
 const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ; 
     tweet:{
         mentions:Array<string>,
@@ -63,24 +81,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     const[tweetedDate,setTweetedDate]=useState<any>(0)
    const [displayReplies,setDisplay]=useState<boolean>(false)
    const [recommended,setRecommended]=useState<any>(0)
-      function getTimeRemaining(a:any, b:any){
-        let total = Math.abs(Date.parse(a) - Date.parse(b))/1000;
-        const days = Math.floor( total/(86400) );
-        total-=days*86400;
-        const hours = Math.floor( (total/3600) % 24 )-2;
-        total-=hours*3600;
-        const minutes = Math.floor( (total/60) % 60 );
-        total-=minutes*60;
-        const seconds =  Math.floor(total% 60) ;
-      
-        return {
-          total,
-          days,
-          hours,
-          minutes,
-          seconds
-        };
-      }
+     
      
     useEffect(()=>{
       // setopenRecommendation(true)
@@ -267,8 +268,30 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
  window.location.assign("/home/"+props.tweet._id);
 
 }
-const fetchRecommended=(tweet_id:string)=>{
-console.log(tweet_id)
+const fetchRecommended=(tweet:any)=>{
+  const axios = require('axios');
+  const FormData = require('form-data');
+  const data = new FormData();
+  const tweetId='6363889d7498c15006bf14fa'
+  const config = {
+    method: 'get',
+    url: 'http://127.0.0.1:8000/api/create_recommendation?id='+tweetId+'&limit=3',
+    headers: { 
+      'Content-Type': 'application/json'
+    },
+    data : data
+  };
+  
+  axios(config)
+  .then(function (response:any) {
+  
+    tweet=response.data
+    // goToReplies()
+    console.log(tweet)
+  })
+  .catch(function (error: any) {
+    console.log(error);
+  });
 }
 const getRecommendedReplies=(tweet:any)=>{
 if(tweet.user===props.userObject.id){
@@ -276,7 +299,7 @@ if(tweet.user===props.userObject.id){
     return(
       <>
        <IonItem>
-        <IonBadge slot="start" className='cursor-pointer' onClick={()=>fetchRecommended(tweet._id)}>{recommended} recommended</IonBadge>
+        <IonBadge slot="start" className='cursor-pointer' onClick={()=>fetchRecommended(tweet)}> get recommended</IonBadge>
         {/* <IonLabel>recommended replies</IonLabel> */}
        
       </IonItem>
@@ -300,7 +323,7 @@ if(tweet.user===props.userObject.id){
             <IonLabel>
                 <h3 style={{ display: "inline" }} > {props.tweet.tweep ? props.tweet.tweep.tweepName:""}</h3>  <p style={{ display: "inline" }} className='ion-margin-horizontal'>{timeLeft}</p>
             </IonLabel>
-            {getRecommendedReplies(props.tweet)}
+            {/* {getRecommendedReplies(props.tweet)} */}
             {/* <IonRow><IonCol>{getRecommendedReplies(props.tweet)}</IonCol></IonRow> */}
         </IonItem>
         <IonCardContent className=' w-60 container lg:px-30 px-4 py-8 mx-auto items-center' onClick={()=>goToReplies()}>

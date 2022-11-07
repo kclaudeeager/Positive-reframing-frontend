@@ -1,11 +1,11 @@
-import { IonAvatar, IonBackButton, IonButton, IonButtons, IonCol, IonContent, IonFooter, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonNav, IonPage, IonRow, IonTitle, IonToolbar } from "@ionic/react";
+import { IonAvatar, IonBackButton, IonBadge, IonButton, IonButtons, IonCol, IonContent, IonFooter, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonNav, IonPage, IonRow, IonTitle, IonToolbar } from "@ionic/react";
 import axios from "axios";
 import { arrowBack, arrowBackCircle, logoTwitter } from "ionicons/icons";
 import { FormEventHandler, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import { fetchTweep, updateTweet } from "../backendIntractions/TweetServices";
 import RepliesCard from "./RepliesCard";
-import TweetItem from "./Tweet";
+import TweetItem, { getTimeRemaining } from "./Tweet";
 import { parseJwt } from "../decodeToken";
 import { Wave } from "./Wave";
 
@@ -22,7 +22,7 @@ const   TweetWithReplies:React.FC<{
     const [userObject,setUserObject]=useState<any>()
     let history = useHistory();
     const [profile_image,setProfileImage]=useState<any>()
-    
+    const[tweetedDate,setTweetedDate]=useState<any>(0)
     // setTimeout(() => setIsHide(false), 1000);
     const addChanges=()=>{
        getSingleTweet(token,tweetId)
@@ -87,13 +87,58 @@ const changeTweetReplies=(id:string,action:string)=>{
     addChanges();
 }
 
+const fetchRecommended=(tweet:any)=>{
+    const axios = require('axios');
+    const FormData = require('form-data');
+    const data = new FormData();
+    // const tweetId='6363889d7498c15006bf14fa'
+    const config = {
+      method: 'get',
+      url: 'http://127.0.0.1:8000/api/create_recommendation?id='+tweet._id+'&limit=3',
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      data : data
+    };
+    
+    axios(config)
+    .then(function (response:any) {
+    
+      tweet=response.data
+      // goToReplies()
+      console.log(tweet)
+      setTweetRepliesList(tweet.replies)
+    })
+    .catch(function (error: any) {
+      console.log(error);
+    });
+  }
+
+  const getRecommendedReplies=(tweet:any)=>{
+    if(tweet.user===userObject.id){
+      if(tweet.replies.length===0 && !tweet.tweet_id && tweetedDate.days>=2){
+        return(
+          <>
+           <IonItem>
+            <IonBadge slot="start" className='cursor-pointer' onClick={()=>fetchRecommended(tweet)}> get recommended</IonBadge>
+            {/* <IonLabel>recommended replies</IonLabel> */}
+           
+          </IonItem>
+          </>
+        )
+      }
+      else{
+        return null
+      }
+    }
+    }
+
     const addChangesToTweetReplies=()=>{
         setTweetRepliesList(tweetRepliesList)
     }
     const addReplies = () => {
        
  }
-
 const getTweetReplies=()=>{
     console.log("my tweetRepliesList ",tweetRepliesList)
     if(tweetRepliesList.length==0){
@@ -122,11 +167,11 @@ const getTweetCard=()=>{
       tweet['url']='tweets/'
   }
     return (
-        <div className=' grid grid-cols-1 md:grid-cols-3 '><IonRow  key={`${tweet._id}`} className="mx-auto"><TweetItem userObject={userObject} tweet={tweet} onCalculate={function (): void {
+        <div className=' grid grid-cols-1 md:grid-cols-3 '><IonRow  key={`${tweet._id}`} className="mx-auto"><IonCol><TweetItem userObject={userObject} tweet={tweet} onCalculate={function (): void {
         throw new Error('Function not implemented.');
     } } onReset={function (): void {
         throw new Error('Function not implemented.');
-    } } changeTweet={changeTweet}/></IonRow></div>
+    } } changeTweet={changeTweet}/></IonCol>{getRecommendedReplies(tweet)}</IonRow></div>
 ) 
 }
 
@@ -161,6 +206,11 @@ const getTweetCard=()=>{
             }
                 )
                 setTweetRepliesList(tweet.replies)
+                const createdDate=tweet.created_at
+            const d2 = new Date().toUTCString();
+        
+            const diffDays=getTimeRemaining(d2,createdDate)
+            setTweetedDate(diffDays);
         }
         else{
             if( tweet.replies.length==0){
@@ -214,6 +264,7 @@ useEffect(()=>{
     // const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
     // renderTweets(listTOtest);
     console.log("tweet found",tweet)
+    
 },[])
 
     return(
