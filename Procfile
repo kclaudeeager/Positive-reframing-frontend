@@ -1,1 +1,1 @@
-web: serve -s --port 3000
+web: npm run deploy

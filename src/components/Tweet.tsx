@@ -1,4 +1,4 @@
-import { IonRow, IonCol, IonIcon, IonCard, IonItem, IonLabel, IonCardContent, IonAvatar, IonAlert } from '@ionic/react';
+import { IonRow, IonCol, IonIcon, IonCard, IonItem, IonLabel, IonCardContent, IonAvatar, IonAlert, IonButton, IonBadge } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import parse from 'html-react-parser';
 import './TweetCard.css';
@@ -59,9 +59,10 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
     const [token,setToken]=useState<any>()
     const [message,setMessage]=useState<string>()
     const [timeLeft,setLeftTime]=useState<string>()
-
-  
+    const [openRecommendation,setopenRecommendation]=useState<boolean>(false)
+    const[tweetedDate,setTweetedDate]=useState<any>(0)
    const [displayReplies,setDisplay]=useState<boolean>(false)
+   const [recommended,setRecommended]=useState<any>(0)
       function getTimeRemaining(a:any, b:any){
         let total = Math.abs(Date.parse(a) - Date.parse(b))/1000;
         const days = Math.floor( total/(86400) );
@@ -82,7 +83,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
       }
      
     useEffect(()=>{
-  
+      // setopenRecommendation(true)
      
         const token:string=localStorage.getItem("token")||""
         setToken(token)
@@ -91,6 +92,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
         const d2 = new Date().toUTCString();
      
         const diffDays=getTimeRemaining(d2,createdDate)
+        setTweetedDate(diffDays);
       
         console.log(diffDays)
         if(diffDays.days>0){
@@ -265,6 +267,28 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
  window.location.assign("/home/"+props.tweet._id);
 
 }
+const fetchRecommended=(tweet_id:string)=>{
+console.log(tweet_id)
+}
+const getRecommendedReplies=(tweet:any)=>{
+if(tweet.user===props.userObject.id){
+  if(tweet.replies.length===0 && !tweet.tweet_id && tweetedDate.days>2){
+    return(
+      <>
+       <IonItem>
+        <IonBadge slot="start" className='cursor-pointer' onClick={()=>fetchRecommended(tweet._id)}>{recommended} recommended</IonBadge>
+        {/* <IonLabel>recommended replies</IonLabel> */}
+       
+      </IonItem>
+      </>
+    )
+  }
+  else{
+    return null
+  }
+}
+}
+
     return(
         <>
 
@@ -276,6 +300,8 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
             <IonLabel>
                 <h3 style={{ display: "inline" }} > {props.tweet.tweep ? props.tweet.tweep.tweepName:""}</h3>  <p style={{ display: "inline" }} className='ion-margin-horizontal'>{timeLeft}</p>
             </IonLabel>
+            {getRecommendedReplies(props.tweet)}
+            {/* <IonRow><IonCol>{getRecommendedReplies(props.tweet)}</IonCol></IonRow> */}
         </IonItem>
         <IonCardContent className=' w-60 container lg:px-30 px-4 py-8 mx-auto items-center' onClick={()=>goToReplies()}>
             {getMessege(props.tweet.message)}
@@ -290,6 +316,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
              </IonCol>
             {displayReplies && <RepliesCard tweet={props.tweet} addReplies={addReplies} />}
         </IonRow>
+
         <IonRow>
           <IonCol>
             <IonAlert
