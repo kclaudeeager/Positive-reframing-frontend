@@ -23,6 +23,7 @@ const   TweetWithReplies:React.FC<{
     let history = useHistory();
     const [profile_image,setProfileImage]=useState<any>()
     const[tweetedDate,setTweetedDate]=useState<any>(0)
+    const [recommendeReplies,setrecommendeReplies]=useState<Array<any>>([])
     // setTimeout(() => setIsHide(false), 1000);
     const addChanges=()=>{
        getSingleTweet(token,tweetId)
@@ -104,14 +105,17 @@ const fetchRecommended=(tweet:any)=>{
     axios(config)
     .then(function (response:any) {
     
-      tweet=response.data
+     tweet=response.data
       // goToReplies()
       console.log(tweet)
-      setTweetRepliesList(tweet.replies)
+      setrecommendeReplies(tweet.replies)
     })
     .catch(function (error: any) {
       console.log(error);
     });
+  }
+  const getRecommended=()=>{
+    setTweetRepliesList(recommendeReplies)
   }
 
   const getRecommendedReplies=(tweet:any)=>{
@@ -119,11 +123,12 @@ const fetchRecommended=(tweet:any)=>{
       if(tweet.replies.length===0 && !tweet.tweet_id && tweetedDate.days>=2){
         return(
           <>
+         { recommendeReplies.length>0?(
            <IonItem>
-            <IonBadge slot="start" className='cursor-pointer' onClick={()=>fetchRecommended(tweet)}> get recommended</IonBadge>
+            <IonBadge slot="start" className='cursor-pointer' onClick={getRecommended}>get {recommendeReplies.length} recommended </IonBadge>
             {/* <IonLabel>recommended replies</IonLabel> */}
            
-          </IonItem>
+          </IonItem>):null}
           </>
         )
       }
@@ -211,6 +216,7 @@ const getTweetCard=()=>{
         
             const diffDays=getTimeRemaining(d2,createdDate)
             setTweetedDate(diffDays);
+            fetchRecommended(tweet)
         }
         else{
             if( tweet.replies.length==0){
@@ -264,6 +270,7 @@ useEffect(()=>{
     // const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
     // renderTweets(listTOtest);
     console.log("tweet found",tweet)
+
     
 },[])
 
