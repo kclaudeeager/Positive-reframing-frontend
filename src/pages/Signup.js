@@ -76,7 +76,7 @@ const Signup = () => {
     }, [params]);
 	
 	return (
-		<IonPage className={ styles.signupPage }>
+		<IonPage className={"md:h-screen md:mx-10"+ styles.signupPage }>
       
       <IonHeader>
         <IonToolbar>
@@ -92,8 +92,8 @@ const Signup = () => {
         </IonToolbar>
       </IonHeader>
 
-			<IonContent fullscreen>
-                <IonGrid className="ion-padding">
+			<IonContent fullscreen className='relative'>
+                <IonGrid className="ion-padding md:flex md:flex-col justify-center items-center">
                     <IonRow>
                         <IonCol size="12" className={ styles.headingText }>
                             {/* <IonCardTitle>Sign up</IonCardTitle> */}
@@ -101,7 +101,7 @@ const Signup = () => {
                         </IonCol>
                     </IonRow>
 
-                    <IonRow className="ion-margin-top ion-padding-top">
+                    <IonRow className="ion-margin-top md:flex md:w-[400px] ion-padding-top text-black">
                         <IonCol size="12">
 
                             { fields.map(field => {
@@ -127,10 +127,12 @@ const Signup = () => {
                 </IonGrid>
 			</IonContent>
 
-			<IonFooter>
-				<IonGrid className="ion-no-margin ion-no-padding">
-
-                    <Action message="Already got an account?" text="Login" link="/login" />
+			<IonFooter className='md:h-64'>
+				<IonGrid className="ion-no-margin ion-no-padding ">
+          <div className=' md:absolute md:top-4 md:left-[50%]'>
+            <Action message="Already got an account?" text="Login" link="/login" />
+          </div>
+                    
                     <Wave />
 				</IonGrid>
 			</IonFooter>

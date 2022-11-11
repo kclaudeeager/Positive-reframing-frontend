@@ -398,7 +398,7 @@ const axios = require('axios');
                 }}></IonInput> */}
             <div className="description outline-none w-44 md:max-lg:flex lg:w-48  text-black sm:text-center">
               <MentionsInput
-                className="mentions"
+                className="mentions  text-black bg-white"
                 inputRef={myInput}
                 spellCheck="false"
                 placeholder="your comment"

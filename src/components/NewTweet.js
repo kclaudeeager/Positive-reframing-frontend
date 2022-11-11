@@ -260,7 +260,7 @@ const NewPost = () => {
             <div className="description outline-none w-60 md:max-lg:flex lg:w-80  text-black sm:text-center">
            
           <MentionsInput
-            className="mentions"
+            className="mentions text-black bg-white"
             inputRef={myInput}
             spellCheck="false"
             placeholder="What's happening?"
