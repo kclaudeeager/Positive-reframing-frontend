@@ -30,9 +30,9 @@ const   TweetWithReplies:React.FC<{
       }
     const changeTweet=(id:string,action:string)=>{
        
-        if(tweet._id==id){
+        if(tweet._id===id){
             setUrl('http://127.0.0.1:8000/api/'+tweet.url+id)
-            if(action=="assignReaction"){
+            if(action==="assignReaction"){
                 console.log("I am clicked...")
                 if (!tweet.likes.includes(userObject.id)) {
                     tweet.likes.push(userObject.id)
@@ -46,7 +46,7 @@ const   TweetWithReplies:React.FC<{
                   
                 }
             }
-            if(action=="addReplies"){
+            if(action==="addReplies"){
                 tweet.displayReplies=!tweet.displayReplies
             }
             updateTweet(token,tweet,'http://127.0.0.1:8000/api/'+tweet.url+id)
@@ -54,17 +54,15 @@ const   TweetWithReplies:React.FC<{
         setTweet(tweet);
         addChanges();
     }
-    const fetchusers=()=>{
-
-    }
 
 const changeTweetReplies=(id:string,action:string)=>{
+    // eslint-disable-next-line array-callback-return
     tweetRepliesList.map((item:any)=>{
         console.log("Tweet id ",id)
         console.log("Tweet id1 ",item._id)
-          if(item._id==id){
+          if(item._id===id){
               setUrl('http://127.0.0.1:8000/api/'+item.url+id)
-          if(action=="assignReaction"){
+          if(action==="assignReaction"){
              
             if (!item.likes.includes(userObject.id)) {
                 item.likes.push(userObject.id)
@@ -125,7 +123,7 @@ const fetchRecommended=(tweet:any)=>{
           <>
          { recommendeReplies.length>0?(
            <IonItem>
-            <IonBadge slot="start" className='cursor-pointer' onClick={getRecommended}>get {recommendeReplies.length} recommended </IonBadge>
+            <IonBadge slot="start" className='cursor-pointer' onClick={getRecommended}>get {recommendeReplies.length} recommended replies </IonBadge>
             {/* <IonLabel>recommended replies</IonLabel> */}
            
           </IonItem>):null}
@@ -146,7 +144,7 @@ const fetchRecommended=(tweet:any)=>{
  }
 const getTweetReplies=()=>{
     console.log("my tweetRepliesList ",tweetRepliesList)
-    if(tweetRepliesList.length==0){
+    if(tweetRepliesList.length===0){
         return null
     }
     return (
@@ -165,7 +163,7 @@ return (<IonRow  key={`${item._id}`} className="mx-auto"><TweetItem  userObject=
 }
 const getTweetCard=()=>{
   console.log("Found tweet: ",tweet)
-  if(tweet.tweet_id!=undefined){
+  if(tweet.tweet_id!==undefined){
     tweet['url']='replies/'
   }
   else{
@@ -187,19 +185,19 @@ const getTweetCard=()=>{
         console.log(" found tweet id: ",tweet._id)
         console.log("sent one: ",tweetId)
         console.log(tweet)
-        if(tweet.tweet_id!=undefined){
+        if(tweet.tweet_id!==undefined){
           tweet['url']='replies/'
         }
         else{
             tweet['url']='tweets/'
         }
-        if(tweet._id==tweetId){
+        if(tweet._id===tweetId){
             setTweet(tweet)
 
             setTweetList((prev)=>{
                 let isFound=false;
                 prev.forEach((prev:any)=>{
-                if(prev._id==tweet._id){
+                if(prev._id===tweet._id){
                     isFound=true;
                 }
                 })
@@ -219,7 +217,7 @@ const getTweetCard=()=>{
             fetchRecommended(tweet)
         }
         else{
-            if( tweet.replies.length==0){
+            if( tweet.replies.length===0){
                 return
             }
         }
@@ -227,6 +225,7 @@ const getTweetCard=()=>{
  }
 
  
+// eslint-disable-next-line react-hooks/exhaustive-deps
 const getSingleTweet=(token:string,tweetId:string)=>{
     const config = {
         method: 'get',
@@ -270,7 +269,6 @@ useEffect(()=>{
     // const listTOtest=JSON.parse(localStorage.getItem("tweets")|| "[]")
     // renderTweets(listTOtest);
     console.log("tweet found",tweet)
-
     
 },[])
 

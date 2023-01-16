@@ -1,9 +1,10 @@
-import { IonRow,IonLabel,IonGrid,IonCol, IonContent,IonPage } from "@ionic/react";
+import { IonRow,IonLabel,IonGrid,IonCol, IonContent,IonPage,IonFooter } from "@ionic/react";
 import { useEffect, useState, useRef,useCallback, createContext } from "react";
 import { MentionsInput, Mention } from "react-mentions";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import {createTweet} from '../backendIntractions/TweetServices';
+import { Wave } from "../components/Wave";
 
 // import { APIservice } from "../services";
 export const TweetListContext = createContext();
@@ -39,9 +40,10 @@ const NewPost = () => {
   };
   useEffect(() => {
     const token=localStorage.getItem("token")
+    console.log("TOken",token)
     setToken(token)
     if(token==null){
-      window.location.assign("/")
+      window.location.assign("/home")
     }
     getActors();
   
@@ -350,6 +352,11 @@ const NewPost = () => {
        
       </form>
       </IonContent>
+      <IonFooter>
+				{/* <IonGrid className="ion-no-margin ion-no-padding">
+          </IonGrid> */}
+          <Wave />
+          </IonFooter>
     </IonPage>
   );
 };

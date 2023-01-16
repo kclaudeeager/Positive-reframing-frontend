@@ -95,7 +95,7 @@ const TweetItem: React.FC<{ onCalculate: () => void; onReset: () => void ;
         const diffDays=getTimeRemaining(d2,createdDate)
         setTweetedDate(diffDays);
       
-        console.log(diffDays)
+        // console.log(diffDays)
         if(diffDays.days>0){
        
           setLeftTime((prev)=>""+diffDays.days+" days")

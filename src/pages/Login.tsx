@@ -6,12 +6,10 @@ import {
   IonFooter,
   IonHeader,
   IonIcon,
-  IonMenuButton,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import ExploreContainer from "../components/ExploreContainer";
 import { logoTwitter } from "ionicons/icons";
 import React, { useState } from "react";
 import axios from "axios";
@@ -22,20 +20,22 @@ import { IonItem, IonLabel, IonInput, IonAlert } from "@ionic/react";
 import "./Login.css";
 import { Wave } from "../components/Wave";
 
+
 const Login: React.FC = () => {
-  const history = useHistory();
   const [email, setEmail] = useState<string>("claudekwizera003@gmail.com");
   const [username, setuserName] = useState<string>("Claude");
   const [password, setPassword] = useState<string>("12345");
   const [iserror, setIserror] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-
+  const[login,setLogin]=useState<string>("Login")
   function validateEmail(email: string) {
     const re =
+      // eslint-disable-next-line no-control-regex
       /^((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\]))$/;
     return re.test(String(email).toLowerCase());
   }
   const handleLogin = () => {
+   
     if (!email) {
       setMessage("Please enter a valid email");
       setIserror(true);
@@ -52,6 +52,7 @@ const Login: React.FC = () => {
       setIserror(true);
       return;
     }
+    setLogin("loading......")
 
     const FormData = require("form-data");
     const data = new FormData();
@@ -72,12 +73,14 @@ const Login: React.FC = () => {
         localStorage.setItem("token", response.data.access_token);
         //history.push("/home/");
         window.location.assign("/home");
+        setLogin("Login")
       })
       .catch((error) => {
         console.log(error);
         setMessage("Auth failure! Please create an account");
         //Auth failure! Please create an account
         setIserror(true);
+        setLogin("Login")
       });
   };
   return (
@@ -146,10 +149,11 @@ const Login: React.FC = () => {
                 By clicking LOGIN you agree to our <a href="#">Policy</a>
               </p>
               <IonButton expand="block" onClick={handleLogin}>
-                Login
+                {login}
               </IonButton>
               <p style={{ fontSize: "medium" }}>
-                Don't have an account? <a href="/signup">Sign up!</a>
+            
+                Don't have an account? <a href="/signup" style={{}}>Sign up!</a>
               </p>
             </IonCol>
           </IonRow>
@@ -158,7 +162,7 @@ const Login: React.FC = () => {
       </IonContent>
       <IonFooter>
         <IonGrid className="ion-no-margin ion-no-padding"></IonGrid>
-        <Wave />
+        <Wave/>
       </IonFooter>
     </IonPage>
   );

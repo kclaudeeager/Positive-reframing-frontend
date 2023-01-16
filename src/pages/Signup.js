@@ -94,7 +94,7 @@ const Signup = () => {
 
 			<IonContent fullscreen className='relative'>
                 <IonGrid className="ion-padding md:flex md:flex-col justify-center items-center">
-                    <IonRow>
+                    <IonRow className='h-1'>
                         <IonCol size="12" className={ styles.headingText }>
                             {/* <IonCardTitle>Sign up</IonCardTitle> */}
                             <h5>Lets get to know each other</h5>
@@ -109,7 +109,7 @@ const Signup = () => {
                                 return <CustomField field={ field } errors={ errors } />;
                             })}
 
-                            <IonButton className="custom-button" expand="block" onClick={ createAccount }>Create account</IonButton>
+                            <IonButton className="custom-button" expand="block" id='submit' onClick={ createAccount }>Create account</IonButton>
                         </IonCol>
                     </IonRow>
                     <IonRow>
@@ -127,13 +127,16 @@ const Signup = () => {
                 </IonGrid>
 			</IonContent>
 
-			<IonFooter className='md:h-64'>
+			<IonFooter className='h-25 md:h-65'>
 				<IonGrid className="ion-no-margin ion-no-padding ">
-          <div className=' md:absolute md:top-4 md:left-[50%]'>
+          <div className=' md:absolute md:top-2 md:left-[50%]'>
             <Action message="Already got an account?" text="Login" link="/login" />
           </div>
-                    
-                    <Wave />
+          
+      <div className={styles.absoluteBottom}>
+        <Wave />
+       </div>
+                  
 				</IonGrid>
 			</IonFooter>
 		</IonPage>

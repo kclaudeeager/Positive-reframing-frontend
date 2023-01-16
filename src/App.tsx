@@ -34,6 +34,8 @@ import './theme/variables.css';
 import TweetWithReplies from './components/TweetWithReplies';
 import NewPost from './components/NewTweet';
 import Signup from './pages/Signup';
+import Menu from './components/Menu';
+
 
 
 
@@ -42,9 +44,12 @@ setupIonicReact();
 const App: React.FC = () => (
 
   <IonApp>
+    
       <IonReactRouter>
       <IonTabs>
+    
         <IonRouterOutlet>
+     
           <Route exact path="/login">
             <Login />
           </Route>

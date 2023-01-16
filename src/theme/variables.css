@@ -67,6 +67,12 @@ content:"@"
   background-color: #cee4e5;
 }
 
+.menu-button {
+  /* your styles here */
+  color: white;
+  background-color: red;
+}
+
 .mentions__mention {
   background-color: #cee4e5;
 }

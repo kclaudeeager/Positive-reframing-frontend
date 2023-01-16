@@ -351,7 +351,7 @@ const axios = require('axios');
         leaveAnimation={leaveAnimation}
         isOpen={isOpen}
         backdropDismiss={false}
-        className='absolute mt-14 lg:mt-auto bg-transparent text-justify outline-none  lg:h-auto'
+        className='absolute mt-14 lg:mt-auto bg-transparent text-justify outline-none  lg:h-auto container'
       >
              <IonLoading
                   isOpen={showLoading}
@@ -366,7 +366,7 @@ const axios = require('axios');
           <IonToolbar>
             <IonTitle
               color="secondary"
-              className="w-60 container lg:px-30 px-4 py-8 mx-auto items-center"
+              className=" lg:px-30 px-4 py-8 mx-auto items-center md:ml-20 relative"
             >
               allow reframed text
             </IonTitle>
